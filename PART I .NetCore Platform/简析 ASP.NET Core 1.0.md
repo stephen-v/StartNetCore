@@ -1,4 +1,5 @@
 # ASP.NET Core 1.0 执行原理1——Startup Class
+
 ASP.NET Core 是新一代的 ASP.NET，早期称为 ASP.NET vNext，并且在推出初期命名为 ASP.NET 5，但随着 .NET Core 的成熟，以及 ASP.NET 5 的命名会使得外界将它视为 ASP.NET 的升级版，但它其实是新一代从头开始打造的 ASP.NET 核心功能，因此微软宣布将它改为与 .NET Core 同步的名称，即 ASP.NET Core。
 
 ASP.NET Core 可运行于 Windows 平台以及非 Windows 平台，如 Mac OSX 以及 Ubuntu Linux 操作系统，是 Microsoft 第一个具有跨平台能力的 Web 开发框架。
@@ -7,6 +8,7 @@ ASP.NET Core 可运行于 Windows 平台以及非 Windows 平台，如 Mac OSX �
 
 
 ## 核心框架
+
 ASP.NET Core 以 .NET Core 的基础发展，其目前规划的功能有：
 * ASP.NET Core MVC：ASP.NET Core MVC 提供了开发动态web站点的API，包括了WebPages 和 WebAPI ,最终可运行在IIS 或 自托管(self-hosted)的服务器中。
 
@@ -45,6 +47,7 @@ dotnet new
 
 
 **三、修改project.json**
+
 project.json是用于定义项目需要依赖的资源，Web App 需要一个hosting 程序，需要依赖`Kestrel` (),在App部署时根据project.json的依赖文件依靠nuget下载依赖包。
 
 **四、下载依赖包部署网站**
@@ -89,7 +92,7 @@ namespace aspnetcoreapp
 }
 ```
 
-**五、Web Hosting 配置**
+**六、Web Hosting 配置**
 
 在Program.cs文件中复制如下代码，泳衣制定宿主程序为Kestrel,同时制定程序入口
 
@@ -115,16 +118,18 @@ namespace aspnetcoreapp
 ```
 
 **七、编译**
+
 ```
 dotnet build
 ```
-代码完成后，需要调用Royslin编译器将代码编译为assemblies，存储至bin文件夹中。按照上一节所述[](),
+代码完成后，需要调用Roslyn编译器将代码编译为assemblies，存储至bin文件夹中。按照上一节所述([简析 .NET Core 构成体系](http://www.cnblogs.com/vipyoumay/p/5613373.html)),
 ASP.NET Core App 可以编译为IL的assemblies外，还可以通过native直接编译为机器码。
 
 ![新增bin文件夹](http://qiniu.xdpie.com/65b91453ff1285a5a47d69f0f0345adc.png?imageView2/2/w/700)
 
 
-**六、启动**
+**八、启动**
+
 输入启动命令，Kestrel托管程序并在5000端口监听，至此整个程序启动起来。
 ```
 dotnet run
