@@ -10,7 +10,7 @@
 
 <!-- /TOC -->
 
->之前两篇文章分别介绍了，[简析.NET Core 以及与 .NET Framework的关系](http://www.cnblogs.com/vipyoumay/p/5603928.html)和[.NET Core的构成体系](http://www.cnblogs.com/vipyoumay/p/5613373.html),接下来会有一个系列对ASP.NET Core的运行原理剖析。
+>之前两篇文章分别介绍了，[简析.NET Core 以及与 .NET Framework的关系](http://www.cnblogs.com/vipyoumay/p/5603928.html)和[.NET Core的构成体系](http://www.cnblogs.com/vipyoumay/p/5613373.html),接下来计划用一个系列对ASP.NET Core的运行原理进行剖析。便于自己可以更好的了解ASP.NET Core。
 
 
 
