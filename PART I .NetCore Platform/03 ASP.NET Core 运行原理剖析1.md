@@ -10,7 +10,7 @@
 
 <!-- /TOC -->
 
->之前两篇文章分别介绍了，[简析.NET Core 以及与 .NET Framework的关系](http://www.cnblogs.com/vipyoumay/p/5603928.html)和[.NET Core的构成体系](http://www.cnblogs.com/vipyoumay/p/5613373.html),接下来会对ASP.NET Core的运行原理剖析。
+>之前两篇文章分别介绍了，[简析.NET Core 以及与 .NET Framework的关系](http://www.cnblogs.com/vipyoumay/p/5603928.html)和[.NET Core的构成体系](http://www.cnblogs.com/vipyoumay/p/5613373.html),接下来会有一个系列对ASP.NET Core的运行原理剖析。
 
 
 
@@ -39,7 +39,6 @@ ASP.NET Core 以 .NET Core 的基础发展，目前规划的功能有：
 
 ## ASP.NET Core APP 创建与运行
 
->为了了解ASP.NET Core的执行原理，将采用命令行工具运行WebAPP而不是使用 Visual studio 创建。
 
 **一、安装the .NET Core SDK for Windows(Linux、MAC)**
 
