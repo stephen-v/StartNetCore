@@ -10,7 +10,7 @@
 
 <!-- /TOC -->
 
->之前两篇文章分别介绍了，[简析.NET Core 以及与 .NET Framework的关系](http://www.cnblogs.com/vipyoumay/p/5603928.html)和[.NET Core的构成体系](http://www.cnblogs.com/vipyoumay/p/5613373.html),接下来计划用一个系列对ASP.NET Core的运行原理进行剖析。
+>之前两篇文章[简析.NET Core 以及与 .NET Framework的关系](http://www.cnblogs.com/vipyoumay/p/5603928.html)和[.NET Core的构成体系](http://www.cnblogs.com/vipyoumay/p/5613373.html)从总体上介绍.NET Core,接下来计划用一个系列对ASP.NET Core的运行原理进行剖析。
 
 
 
@@ -27,7 +27,8 @@ ASP.NET Core 可运行于 Windows 平台以及非 Windows 平台，如 Mac OSX �
 
 ## 核心框架
 
-ASP.NET Core 以 .NET Core 的基础发展，目前规划的功能有：
+ASP.NET Core 在 .NET Core 的基础上发展，目前规划的功能有：
+
 * **ASP.NET Core MVC:** ASP.NET Core MVC 提供了开发动态web站点的API，包括了WebPages 和 WebAPI ,最终可运行在IIS 或 自托管(self-hosted)的服务器中。
 
 * **DependencyInjection:** 包含了通用的依赖注入接口,用于在ASP.NET Core MVC中使用。
@@ -54,7 +55,7 @@ Usage: dotnet [common-options] [command] [arguments]
 
 **二、命令行生成模版项目**
 
-需要开发一个webapp可以从头开始创建文件，也可以通过命令行生成一个空的项目模版
+开发一个webapp可以从零开始创建文件，也可以通过命令行生成一个空的项目模版，下面的代码用于从零开始创建模版。
 
 ```
 mkdir aspnetcoreapp
@@ -62,7 +63,7 @@ cd aspnetcoreapp
 dotnet new
 ```
 
-依次执行命令后，便可在路径下，生成好模版：
+依次执行命令后，便可在当前路径下，生成模版。
 
 
 ![模版](http://qiniu.xdpie.com/17881f1f0b27fcb8f08c220b6390386d.png?imageView2/2/w/700)
@@ -88,13 +89,24 @@ dotnet new
 
 **三、修改project.json**
 
-project.json是用于定义项目需要依赖的资源，每个WebApp 需要一个hosting 程序(IIS、IISExpress等)，而此次使用`Kestrel` ([什么是kestrel?](http://www.cnblogs.com/artech/p/KestrelServer.html))。
+project.json是用于定义项目需要依赖的资源，每个WebApp 需要一个hosting 程序(IIS、IISExpress等)，而此次使用`Kestrel` ([什么是kestrel?](http://www.cnblogs.com/artech/p/KestrelServer.html))，在project.json中加入对Kestrel的依赖代码清单如下。
+
+```json
+"dependencies": {
+  "Microsoft.NETCore.App": {
+    "type": "platform",
+    "version": "1.0.0-rc2-3002702"
+  },
+  "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-rc2-final"
+},
+
+```
 
 
 
 **四、下载依赖包部署网站**
 
-在WebApp部署时(dotnet restore)根据project.json的依赖文件,依靠nuget下载依赖包,完成对整个程序的restore。
+在WebApp部署时(dotnet restore)根据project.json的依赖文件,依靠nuget下载依赖包,完成对整个程序的restore。(类似于Nodejs的 npm restore)
 
 在`C:\Users\stephen\.nuget\packages`可以看到nuget已经下载到本地的包，在开始部署前nuget是不会加载依赖包，下图可看到目前nuget并没有下载任何包。
 
@@ -121,7 +133,7 @@ dotnet restore
 
 对于一个ASP.NET Core 程序而言，`Startup Class` 是必须的。ASP.NET Core在程序启动时会从assemblies中找到名字叫Startup的类，如果存在多个名为Startup的类，则会先找到项目根名称空间下的Startup类。
 
-在Startup必须定义`Configure`方法，而`configureServices`方法则是可选的，方法会在程序第一次启动时被调用。
+在Startup必须定义`Configure`方法，而`configureServices`方法则是可选的，方法会在程序第一次启动时被调用。`对于startup.cs中的configure和configureServices方法会在后续文章中详解`。
 
 在刚才文件路径下添加Startup.cs文件，并复制如下代码:
 
@@ -201,7 +213,7 @@ dotnet run
 
 本节介绍了ASP.NET Core 项目从创建、配置、编译、发布、运行的过程，ASP.NET Core与之前的ASP.NET相比具有更高的透明度和灵活性，可以快速的在各个操作系统中开发与运行。
 
-本节使用Windows操作系统，但目前微软也在 linux和mac 下提供了类似的命令行工具([链接地址](https://www.microsoft.com/net/core#ubuntu))，方便在 linux和mac 下开发与部署，在后面文章中会详细讲解，本节不再累述。
+本节使用Windows操作系统，但目前微软也在 `linux` 和 `mac` 下提供了类似的命令行工具([链接地址](https://www.microsoft.com/net/core#ubuntu))，方便在 `linux` 和 `mac` 下开发与部署，在后面文章中会详细讲解，本节不再累述。
 
 ----
 
