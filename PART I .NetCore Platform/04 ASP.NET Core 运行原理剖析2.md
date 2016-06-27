@@ -1,4 +1,4 @@
-# ASP.NET Core 运行原理剖析1:Startup 和 Middleware(中间件)
+# ASP.NET Core 运行原理剖析2:Startup 和 Middleware(中间件)
 
 >在上一节[(文章链接)](http://www.cnblogs.com/vipyoumay/p/5613373.html)中已经提到一个ASP.NET Core WebApp 必须要有个Startup类,本节将重点讲解Startup类以及中间件在Startup类中的使用。
 
