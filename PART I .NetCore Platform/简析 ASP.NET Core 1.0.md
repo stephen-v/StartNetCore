@@ -76,6 +76,7 @@ dotnet new
 主掌项目的运行期的配置设置，包含项目的包参考 (Package References)、项目的基本设置、引导指令、包含或排除指定目录、以及建造时的相关事件指令等。
 
 
+
 * **Program.cs:**
 
 程序入口文件
@@ -98,7 +99,9 @@ project.json是用于定义项目需要依赖的资源，每个WebApp 需要一�
 
 在`C:\Users\stephen\.nuget\packages`可以看到nuget已经下载到本地的包，在开始部署前nuget是不会加载依赖包，下图可看到目前nuget并没有下载任何包。
 
-![nuget](http://qiniu.xdpie.com/c0a0cfd5f9117f5e74c2a8eaa08c4be2.png?imageView2/2/w/700)
+
+![nuget](http://qiniu.xdpie.com/1778b5d28e882d3683ce85765467d006.png?imageView2/2/w/700)
+
 
 然后执行命令
 
@@ -109,7 +112,8 @@ dotnet restore
 
 可以看到，nuget已经自动将需要依赖包下载到本地
 
-![nuget](http://qiniu.xdpie.com/e38ee0cb0a7a4423ca4df4674a527f81.png?imageView2/2/w/700)
+![nuget](http://qiniu.xdpie.com/36a4c04f3a50c6fdc61d66c06b864330.png?imageView2/2/w/700)
+
 
 
 **五、添加Startup.cs文件**
