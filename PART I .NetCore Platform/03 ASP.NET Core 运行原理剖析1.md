@@ -1,9 +1,9 @@
-# ASP.NET Core 1.0 运行原理剖析 1 —— 初始化WebApp模版并运行
+# ASP.NET Core 运行原理剖析一：初始化WebApp模版并运行
 
 
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
-- [ASP.NET Core 1.0 运行原理剖析 1 —— 初始化WebApp模版并运行](#aspnet-core-10-运行原理剖析-1-初始化webapp模版并运行)
+- [ASP.NET Core 运行原理剖析一：初始化WebApp模版并运行](#aspnet-core-运行原理剖析一初始化webapp模版并运行)
 	- [核心框架](#核心框架)
 	- [ASP.NET Core APP 创建与运行](#aspnet-core-app-创建与运行)
 	- [总结](#总结)
