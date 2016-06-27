@@ -133,7 +133,7 @@ dotnet restore
 
 对于一个ASP.NET Core 程序而言，`Startup Class` 是必须的。ASP.NET Core在程序启动时会从assemblies中找到名字叫Startup的类，如果存在多个名为Startup的类，则会先找到项目根名称空间下的Startup类。
 
-在Startup必须定义`Configure`方法，而`configureServices`方法则是可选的，方法会在程序第一次启动时被调用。`Startup的详细功能的对于startup.cs中的configure和configureServices方法会在后续文章中详解`。
+在Startup必须定义`Configure`方法，而`configureServices`方法则是可选的，方法会在程序第一次启动时被调用，类似传统的ASP.NET MVC的路由和应用程序状态均可在Startup中配置，也可以在此安装所需中间件等等。`Startup的详细功能的对于startup.cs中的configure和configureServices方法会在后续文章中详解`。
 
 在刚才文件路径下添加Startup.cs文件，并复制如下代码:
 
