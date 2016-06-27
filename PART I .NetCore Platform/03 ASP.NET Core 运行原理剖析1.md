@@ -112,7 +112,9 @@ dotnet restore
 
 可以看到，nuget已经自动将需要依赖包下载到本地
 
-![nuget](http://qiniu.xdpie.com/36a4c04f3a50c6fdc61d66c06b864330.png?imageView2/2/w/700)
+![nuget](http://qiniu.xdpie.com/18821013e887a7a6189bf605c4fafbda.png?imageView2/2/w/700)
+
+
 
 
 
