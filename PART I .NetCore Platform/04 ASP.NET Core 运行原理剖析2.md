@@ -8,10 +8,12 @@
 		- [二、ConfigureServices](#二configureservices)
 		- [三、Startup Constructor（构造函数）](#三startup-constructor构造函数)
 	- [Middleware](#middleware)
+		- [中间件注册](#中间件注册)
+		- [常用中间件](#常用中间件)
 
 <!-- /TOC -->
 
->在上一节[(文章链接)](http://www.cnblogs.com/vipyoumay/p/5613373.html)中已经提到一个ASP.NET Core WebApp 必须要有个Startup类,本节将重点讲解Startup类以及中间件在Startup类中的使用。
+>在上一节[(文章链接)](http://www.cnblogs.com/vipyoumay/p/5613373.html)中提到一个ASP.NET Core WebApp 必须有Startup类,在本节中将重点讲解Startup类以及中间件在Startup类中的使用。
 
 ## Startup Class
 Startup Class中含有两个重要方法：Configure方法用于每次http请求的处理，比如后面要讲的中间件(Middleware)，就是在configure方法中配置。而ConfigureServices方法在Configure方法前调用，它是一个可选的方法，可在configureServices配置一些全局的框架，比如EntityFramework、MVC等。
@@ -192,4 +194,19 @@ app.Use((context, next) =>
 
 ![Use](http://qiniu.xdpie.com/4ffa0cb722bc45c0456c7569134e6222.png?imageView2/2/w/700)
 
-### 
+### 常用中间件
+
+| Middleware    | 功能描述   |
+| :------------- | :------------- |
+| Authentication       | 提供权限支持     |
+| CORS       | 跨域的配置     |
+| Routing      | 配置http请求路由     |
+| Session      | 管理用户会话     |
+| Static Files      | 提供对静态文件的浏览    |
+
+这里有一些官方的示例,[链接](https://github.com/Microsoft-Build-2016/CodeLabs-WebDev/tree/master/Module2-AspNetCore)
+
+
+参考链接
+[1] https://docs.asp.net/en/latest/fundamentals/middleware.html
+[2] http://www.talkingdotnet.com/app-use-vs-app-run-asp-net-core-middleware/
