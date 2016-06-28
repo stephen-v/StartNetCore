@@ -76,8 +76,6 @@ namespace WebApplication1
 
 ```
 
-
-
 ```cs
 using System;
 using System.Collections.Generic;
@@ -143,6 +141,52 @@ public void ConfigureServices(IServiceCollection services)
 
 
 ### 三、Startup Constructor（构造函数）
-
+在构造函数中可以注入IHostingEnvironment、ILoggerFactory功能同上，此处不再赘述。
 
 ## Middleware
+中间件是一个处理http 请求和 响应的组件，多个中间件构成了处理管道(Handler pipeline)，每个中间件可以决定是否传递至管道中的下一中间件。一旦注册中间件后，每次请求和响应均会被调用。
+
+![调用示意](http://qiniu.xdpie.com/9748b3bdfa96bcfb20e7fc9108a0e177.png?imageView2/2/w/700)
+
+中间件的注册在startup中的Configure方法完成，在configure方法中使用IApplicationBuilder对象的Run、Map、Use方法传入匿名委托(delegate)。
+
+* Map:含有两个参数pathMatche和configuration，通过请求的url地址匹配相应的configuration。
+
+** Run & Use:添加一个中间件至请求管道。它们在功能很类似但是也存在一些区别，先来看下两个方法的定义。
+
+``` cs
+ public static IApplicationBuilder Use(this IApplicationBuilder app, Func<HttpContext, Func<Task>, Task> middleware);
+
+ public static void Run(this IApplicationBuilder app, RequestDelegate handler);
+
+```
+
+Run是通过扩展方法语法来定义，传入入参是RequestDelegate的委托,执行完一个第一个run后是不会激活管道中的第二个run方法，这样代码执行结果只会输出一个“hello world!”
+
+```cs
+
+app.Run((context) => context.Response.WriteAsync("Hello World!"));
+
+app.Run((context) => context.Response.WriteAsync("Hello World 1!"));
+
+```
+
+![run](http://qiniu.xdpie.com/5b432f7cd86c1c89779dd77e54d63524.png?imageView2/2/w/700)
+
+而use方法的入参则是Func<>的委托包含两个入参和一个返回值,这样在第一个函数执行完成后可以选择是否继续执行后续管道中的中间件还是中断管道执行。
+
+```cs
+
+app.Use((context, next) =>
+					 {
+							 context.Response.WriteAsync("ok");
+							 return next();
+					 });
+app.Use((context, next) =>
+					 {
+							 return context.Response.WriteAsync("ok");
+					 });
+
+```
+
+![Use](http://qiniu.xdpie.com/4ffa0cb722bc45c0456c7569134e6222.png?imageView2/2/w/700)
