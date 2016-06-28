@@ -4,12 +4,12 @@
 
 - [ASP.NET Core 运行原理剖析2:Startup 和 Middleware(中间件)](#aspnet-core-运行原理剖析2startup-和-middleware中间件)
 	- [Startup Class](#startup-class)
-		- [一、Configure方法](#一configure方法)
-		- [二、ConfigureServices](#二configureservices)
-		- [三、Startup Constructor（构造函数）](#三startup-constructor构造函数)
+		- [1、Configure方法](#1configure方法)
+		- [2、ConfigureServices](#2configureservices)
+		- [3、Startup Constructor（构造函数）](#3startup-constructor构造函数)
 	- [Middleware](#middleware)
-		- [中间件注册](#中间件注册)
-		- [常用中间件](#常用中间件)
+		- [1、中间件注册](#1中间件注册)
+		- [2、常用中间件](#2常用中间件)
 
 <!-- /TOC -->
 
@@ -18,7 +18,7 @@
 ## Startup Class
 Startup Class中含有两个重要方法：Configure方法用于每次http请求的处理，比如后面要讲的中间件(Middleware)，就是在configure方法中配置。而ConfigureServices方法在Configure方法前调用，它是一个可选的方法，可在configureServices配置一些全局的框架，比如EntityFramework、MVC等。
 
-### 一、Configure方法
+### 1、Configure方法
 在Configure方法中，通过DI(依赖注入),可注入以下对象：
 * `IApplicationBuilder`:用于构建应用请求管道。通过IApplicationBuilder下的run方法传入管道处理方法(中间件)。这个是最常用方法，对于一个现实环境的应用基本上离不开中间件比如权限验证、跨域、异常处理等。下面代码调用IApplicationBuilder.use方法注册中间件。拦截每个http请求，输出Hello World。
 
@@ -56,7 +56,7 @@ Startup Class中含有两个重要方法：Configure方法用于每次http请求
 ![logger](http://qiniu.xdpie.com/5b3a9f59c5e22cf0bf3d9f83fe0a6359.png?imageView2/2/w/700)
 
 
-### 二、ConfigureServices
+### 2、ConfigureServices
 
 * **IServiceCollection**：整个ASP.NET Core 默认带有依赖注入(DI)，IServiceCollection是依赖注入的入口，下面实现了简易的一个类(Foo)和接口(IFoo),代码清单如下：
 
@@ -142,7 +142,7 @@ public void ConfigureServices(IServiceCollection services)
 ```
 
 
-### 三、Startup Constructor（构造函数）
+### 3、Startup Constructor（构造函数）
 在构造函数中可以注入IHostingEnvironment、ILoggerFactory功能同上，此处不再赘述。
 
 ## Middleware
@@ -150,7 +150,7 @@ public void ConfigureServices(IServiceCollection services)
 
 ![调用示意](http://qiniu.xdpie.com/9748b3bdfa96bcfb20e7fc9108a0e177.png?imageView2/2/w/700)
 
-### 中间件注册
+### 1、中间件注册
 中间件的注册在startup中的Configure方法完成，在configure方法中使用IApplicationBuilder对象的Run、Map、Use方法传入匿名委托(delegate)。
 
 * Map:含有两个参数pathMatche和configuration，通过请求的url地址匹配相应的configuration。
@@ -194,7 +194,7 @@ app.Use((context, next) =>
 
 ![Use](http://qiniu.xdpie.com/4ffa0cb722bc45c0456c7569134e6222.png?imageView2/2/w/700)
 
-### 常用中间件
+### 2、常用中间件
 
 | Middleware    | 功能描述   |
 | :------------- | :------------- |
