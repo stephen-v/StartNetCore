@@ -148,6 +148,7 @@ public void ConfigureServices(IServiceCollection services)
 
 ![调用示意](http://qiniu.xdpie.com/9748b3bdfa96bcfb20e7fc9108a0e177.png?imageView2/2/w/700)
 
+### 中间件注册
 中间件的注册在startup中的Configure方法完成，在configure方法中使用IApplicationBuilder对象的Run、Map、Use方法传入匿名委托(delegate)。
 
 * Map:含有两个参数pathMatche和configuration，通过请求的url地址匹配相应的configuration。
@@ -173,7 +174,7 @@ app.Run((context) => context.Response.WriteAsync("Hello World 1!"));
 
 ![run](http://qiniu.xdpie.com/5b432f7cd86c1c89779dd77e54d63524.png?imageView2/2/w/700)
 
-而use方法的入参则是Func<>的委托包含两个入参和一个返回值,这样在第一个函数执行完成后可以选择是否继续执行后续管道中的中间件还是中断管道执行。
+而use方法的入参则是Func<>的委托包含两个入参和一个返回值,这样在第一个函数执行完成后可以选择是否继续执行后续管道中的中间件还是中断。
 
 ```cs
 
@@ -190,3 +191,5 @@ app.Use((context, next) =>
 ```
 
 ![Use](http://qiniu.xdpie.com/4ffa0cb722bc45c0456c7569134e6222.png?imageView2/2/w/700)
+
+### 
