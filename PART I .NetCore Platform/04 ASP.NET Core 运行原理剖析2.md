@@ -13,19 +13,21 @@
 
 <!-- /TOC -->
 
->在上一节[(文章链接)](http://www.cnblogs.com/vipyoumay/p/5613373.html)中提到一个ASP.NET Core WebApp 必须有Startup类,在本节中将重点讲解Startup类以及中间件在Startup类中的使用。
+>在上一节[(文章链接)](http://www.cnblogs.com/vipyoumay/p/5613373.html)中提到ASP.NET Core WebApp 必须含有Startup类,在本节中将重点讲解Startup类以及Middleware(中间件)在Startup类中的使用。
 
 ## Startup Class
-Startup Class中含有两个重要方法：Configure方法用于每次http请求的处理，比如后面要讲的中间件(Middleware)，就是在configure方法中配置。而ConfigureServices方法在Configure方法前调用，它是一个可选的方法，可在configureServices配置一些全局的框架，比如EntityFramework、MVC等。
+Startup Class中含有两个重要方法：Configure方法用于每次http请求的处理，比如后面要讲的中间件(Middleware)，就是在configure方法中配置。而ConfigureServices方法在Configure方法前调用，它是一个可选的方法，可在configureServices依赖注入接口或一些全局的框架，比如EntityFramework、MVC等。
 
 ### 1、Configure方法
-在Configure方法中，通过DI(依赖注入),可注入以下对象：
-* `IApplicationBuilder`:用于构建应用请求管道。通过IApplicationBuilder下的run方法传入管道处理方法(中间件)。这个是最常用方法，对于一个现实环境的应用基本上离不开中间件比如权限验证、跨域、异常处理等。下面代码调用IApplicationBuilder.use方法注册中间件。拦截每个http请求，输出Hello World。
+在Configure方法中，通过入参的依赖注入(DI),可注入以下对象：
+* `IApplicationBuilder`:用于构建应用请求管道。通过IApplicationBuilder下的run方法传入管道处理方法即中间件(中间件会在后文中详细介绍)。这是最常用方法，对于一个真实环境的应用基本上离不开中间件比如权限验证、跨域、异常处理等。下面代码调用IApplicationBuilder.use方法注册中间件。拦截每个http请求，输出Hello World。
 
 
 ```cs
-   app.Run((context) => context.Response.WriteAsync("Hello World!"));
-
+public void Configure(IApplicationBuilder app)
+{
+	app.Run((context) => context.Response.WriteAsync("Hello World!"));
+}
 ```
 
 * `IHostingEnvironment`:用于访问应用程序的特殊属性，比如`applicationName`,`applicationVersion`。
@@ -36,21 +38,16 @@ Startup Class中含有两个重要方法：Configure方法用于每次http请求
 * `ILoggerFactory`:提供创建日志的接口，可以选用已经实现接口的类或自行实现此接口,下面代码使用最简单的控制台作为日志输出。
 
 ``` cs
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory logger)
         {
             var log = logger.CreateLogger("default");
             logger.AddConsole();
             log.LogInformation("start configure");
-
-
-            app.Run(async (context) =>
+            app.Run( (context) =>
             {
-                await context.Response.WriteAsync("Hello World!");
+                return context.Response.WriteAsync("Hello World!");
             });
         }
-
 ```
 
 ![logger](http://qiniu.xdpie.com/5b3a9f59c5e22cf0bf3d9f83fe0a6359.png?imageView2/2/w/700)
