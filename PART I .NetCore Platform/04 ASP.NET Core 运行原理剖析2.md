@@ -220,7 +220,15 @@ app.Use((context, next) =>
 
 ![Use](http://qiniu.xdpie.com/4ffa0cb722bc45c0456c7569134e6222.png?imageView2/2/w/700)
 
-* **Map:** 含有两个参数pathMatche和configuration，通过请求的url地址匹配相应的configuration。
+* **Map:** 含有两个参数pathMatche和configuration，通过请求的url地址匹配相应的configuration。例如可以将url路径是/admin的处理函数指定为如下代码：
+
+```cs
+app.Map("/admin", builder =>
+					{
+							builder.Use((context, next) => context.Response.WriteAsync("admin"));
+					});
+
+```
 
 ### 2、常用中间件
 
