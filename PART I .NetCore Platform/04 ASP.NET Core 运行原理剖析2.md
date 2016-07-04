@@ -200,7 +200,7 @@ app.Run((context) => context.Response.WriteAsync("Hello World 1!"));
 
 ```
 
-![run](http://qiniu.xdpie.com/5b432f7cd86c1c89779dd77e54d63524.png?imageView2/2/w/700)
+![run](http://qiniu.xdpie.com/45b355f7238091d3a389747f634055d5.png?imageView2/2/w/700)
 
 而use方法的入参则是Func<>的委托包含两个入参和一个返回值,这样在第一个函数执行完成后可以选择是否继续执行后续管道中的中间件还是中断。
 
@@ -217,8 +217,7 @@ app.Use((context, next) =>
 					 });
 
 ```
-
-![Use](http://qiniu.xdpie.com/4ffa0cb722bc45c0456c7569134e6222.png?imageView2/2/w/700)
+![Use](http://qiniu.xdpie.com/ffa7a5524a645ef32e4ea82290d66121.png?imageView2/2/w/700)
 
 * **Map:** 含有两个参数pathMatche和configuration，通过请求的url地址匹配相应的configuration。例如可以将url路径是/admin的处理函数指定为如下代码：
 
@@ -247,7 +246,7 @@ app.Map("/admin", builder =>
 
 > **以上内容有任何错误或不准确的地方请大家指正，不喜勿喷！**
 
-> 作者：帅虫哥 出处： [http://www.cnblogs.com/vipyoumay/p/5620373.html ](http://www.cnblogs.com/vipyoumay/p/5620373.html)
+> 作者：帅虫哥 出处： [http://www.cnblogs.com/vipyoumay/p/5640645.html ](http://www.cnblogs.com/vipyoumay/p/5640645.html )
 
 > **本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文连接，否则保留追究法律责任的权利。如果觉得还有帮助的话，可以点一下右下角的【推荐】，希望能够持续的为大家带来好的技术文章！想跟我一起进步么？那就【关注】我吧。**
 
