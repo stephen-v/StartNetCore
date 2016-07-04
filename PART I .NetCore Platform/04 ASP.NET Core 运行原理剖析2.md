@@ -4,9 +4,20 @@
 
 - [ASP.NET Core 运行原理剖析2:Startup 和 Middleware(中间件)](#aspnet-core-运行原理剖析2startup-和-middleware中间件)
 	- [Startup Class](#startup-class)
-		- [1、Configure方法](#1configure方法)
+		- [1、Startup Constructor（构造函数）](#1startup-constructor构造函数)
 		- [2、ConfigureServices](#2configureservices)
-		- [3、Startup Constructor（构造函数）](#3startup-constructor构造函数)
+		- [3、Configure方法](#3configure方法)
+	- [Middleware](#middleware)
+		- [1、中间件注册](#1中间件注册)
+		- [2、常用中间件](#2常用中间件)
+
+<!-- /TOC -->!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [ASP.NET Core 运行原理剖析2:Startup 和 Middleware(中间件)](#aspnet-core-运行原理剖析2startup-和-middleware中间件)
+	- [Startup Class](#startup-class)
+		- [1、Startup Constructor（构造函数）](#1startup-constructor构造函数)
+		- [2、ConfigureServices](#2configureservices)
+		- [3、Configure方法](#3configure方法)
 	- [Middleware](#middleware)
 		- [1、中间件注册](#1中间件注册)
 		- [2、常用中间件](#2常用中间件)
