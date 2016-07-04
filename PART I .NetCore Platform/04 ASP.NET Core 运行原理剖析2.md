@@ -16,40 +16,48 @@
 >在上一节[(文章链接)](http://www.cnblogs.com/vipyoumay/p/5613373.html)中提到ASP.NET Core WebApp 必须含有Startup类,在本节中将重点讲解Startup类以及Middleware(中间件)在Startup类中的使用。
 
 ## Startup Class
-Startup Class中含有两个重要方法：Configure方法用于每次http请求的处理，比如后面要讲的中间件(Middleware)，就是在configure方法中配置。而ConfigureServices方法在Configure方法前调用，它是一个可选的方法，可在configureServices依赖注入接口或一些全局的框架，比如EntityFramework、MVC等。
+Startup Class中含有两个重要方法：Configure方法用于每次http请求的处理，比如后面要讲的中间件(Middleware)，就是在configure方法中配置。而ConfigureServices方法在Configure方法前调用，它是一个可选的方法，可在configureServices依赖注入接口或一些全局的框架，比如EntityFramework、MVC等。**Startup 类的 执行顺序：`构造 -> configureServices->configure`**。
 
-### 1、Configure方法
 
-**在Configure方法中，通过入参的依赖注入(DI),可注入以下对象：**
+### 1、Startup Constructor（构造函数）
 
-* **`IApplicationBuilder`:** 用于构建应用请求管道。通过IApplicationBuilder下的run方法传入管道处理方法。这是最常用方法，对于一个真实环境的应用基本上都需要比如权限验证、跨域、异常处理等。下面代码调用IApplicationBuilder.use方法注册处理函数。拦截每个http请求，输出Hello World。
+**主要实现一些配置的工作，方法参数如下：**
 
+* **`IHostingEnvironment`:** 用于访问应用程序的特殊属性，比如`applicationName`,`applicationVersion`。通过`IHostingEnvironment`对象下的属性可以在构造中实现配置工作，通过获取当前根路径找到配置json文件地址，并通过ConfigurationBuilder初始化配置文件，最后通过GetSection()方法获取配置文件。代码清单如下：
 
 ```cs
-public void Configure(IApplicationBuilder app)
+
+var builder = new ConfigurationBuilder()
+							.SetBasePath(env.ContentRootPath)
+							 .AddJsonFile("appsettings.json");
+					 var configuration = builder.Build();
+					 var connStr = configuration.GetSection("Data:DefaultConnection:ConnectionString").Value;
+
+```
+根目录下的配置文件如下：
+```json
+
 {
-	app.Run((context) => context.Response.WriteAsync("Hello World!"));
+	"Data": {
+		"DefaultConnection": {
+			"ConnectionString": "Server=(localdb)\\MSSQLLocalDB;Database=_CHANGE_ME;Trusted_Connection=True;"
+		}
+	}
 }
+
 ```
 
-* **`IHostingEnvironment`:** 用于访问应用程序的特殊属性，比如`applicationName`,`applicationVersion`。在下图中可以看到，在**`IHostingEnvironment`**对象下的属相。英文已经很明确了，此处不再详述。
 
-
-![hosting](http://qiniu.xdpie.com/47d38eaaf04f5086317a03827e44c605.png?imageView2/2/w/700)
 
 * **`ILoggerFactory`:** 提供创建日志的接口，可以选用已经实现接口的类或自行实现此接口,下面代码使用最简单的控制台作为日志输出。
 
 ``` cs
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory logger)
-        {
-            var log = logger.CreateLogger("default");
-            logger.AddConsole();
-            log.LogInformation("start configure");
-            app.Run( (context) =>
-            {
-                return context.Response.WriteAsync("Hello World!");
-            });
-        }
+public Startup(IHostingEnvironment env, ILoggerFactory logger)
+ {
+		 var log = logger.CreateLogger("default");
+		 logger.AddConsole();
+		 log.LogInformation("log...!");
+ }
 ```
 
 ![logger](http://qiniu.xdpie.com/5b3a9f59c5e22cf0bf3d9f83fe0a6359.png?imageView2/2/w/700)
@@ -57,7 +65,7 @@ public void Configure(IApplicationBuilder app)
 
 ### 2、ConfigureServices
 
-**在ConfigureServices方法中，通过入参的依赖注入(DI),可注入以下对象：**
+**主要实现了依赖注入(DI)的配置，方法参数如下：**
 
 * **IServiceCollection**：整个ASP.NET Core 默认带有依赖注入(DI)，IServiceCollection是依赖注入的入口，首先创建一个类(Foo)和接口(IFoo),代码清单如下：
 
@@ -142,9 +150,28 @@ public void ConfigureServices(IServiceCollection services)
 
 ```
 
+### 3、Configure方法
 
-### 3、Startup Constructor（构造函数）
-在构造函数中可以注入IHostingEnvironment、ILoggerFactory功能同上，此处不再赘述。
+**主要是http处理管道配置和一些系统配置，参数如下：**
+
+* **`IApplicationBuilder`:** 用于构建应用请求管道。通过IApplicationBuilder下的run方法传入管道处理方法。这是最常用方法，对于一个真实环境的应用基本上都需要比如权限验证、跨域、异常处理等。下面代码调用IApplicationBuilder.use方法注册处理函数。拦截每个http请求，输出Hello World。
+
+
+```cs
+public void Configure(IApplicationBuilder app)
+{
+	app.Run((context) => context.Response.WriteAsync("Hello World!"));
+}
+```
+
+* **`IHostingEnvironment`:** 同构造参数
+
+* **`ILoggerFactory`:** 同构造参数
+
+
+
+
+
 
 ## Middleware
 中间件是一个处理http 请求和 响应的组件，多个中间件构成了处理管道(Handler pipeline)，每个中间件可以决定是否传递至管道中的下一中间件。一旦注册中间件后，每次请求和响应均会被调用。
