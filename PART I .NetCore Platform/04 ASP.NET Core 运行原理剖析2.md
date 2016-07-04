@@ -206,6 +206,8 @@ app.Use((context, next) =>
 
 
 ---
-参考链接
+*参考链接*
+
 [1] https://docs.asp.net/en/latest/fundamentals/middleware.html
+
 [2] http://www.talkingdotnet.com/app-use-vs-app-run-asp-net-core-middleware/
