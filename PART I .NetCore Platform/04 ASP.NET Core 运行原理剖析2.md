@@ -20,7 +20,8 @@ Startup Class中含有两个重要方法：Configure方法用于每次http请求
 
 ### 1、Configure方法
 在Configure方法中，通过入参的依赖注入(DI),可注入以下对象：
-* `IApplicationBuilder`:用于构建应用请求管道。通过IApplicationBuilder下的run方法传入管道处理方法即中间件(中间件会在后文中详细介绍)。这是最常用方法，对于一个真实环境的应用基本上离不开中间件比如权限验证、跨域、异常处理等。下面代码调用IApplicationBuilder.use方法注册中间件。拦截每个http请求，输出Hello World。
+
+* **`IApplicationBuilder`:** 用于构建应用请求管道。通过IApplicationBuilder下的run方法传入管道处理方法。这是最常用方法，对于一个真实环境的应用基本上都需要比如权限验证、跨域、异常处理等。下面代码调用IApplicationBuilder.use方法注册处理函数。拦截每个http请求，输出Hello World。
 
 
 ```cs
@@ -30,12 +31,12 @@ public void Configure(IApplicationBuilder app)
 }
 ```
 
-* `IHostingEnvironment`:用于访问应用程序的特殊属性，比如`applicationName`,`applicationVersion`。
+* **`IHostingEnvironment`:** 用于访问应用程序的特殊属性，比如`applicationName`,`applicationVersion`。在下图中可以看到，在**`IHostingEnvironment`**对象下的属相。英文已经很明确了，此处不再详述。
 
 
 ![hosting](http://qiniu.xdpie.com/47d38eaaf04f5086317a03827e44c605.png?imageView2/2/w/700)
 
-* `ILoggerFactory`:提供创建日志的接口，可以选用已经实现接口的类或自行实现此接口,下面代码使用最简单的控制台作为日志输出。
+* **`ILoggerFactory`:** 提供创建日志的接口，可以选用已经实现接口的类或自行实现此接口,下面代码使用最简单的控制台作为日志输出。
 
 ``` cs
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory logger)
@@ -55,7 +56,7 @@ public void Configure(IApplicationBuilder app)
 
 ### 2、ConfigureServices
 
-* **IServiceCollection**：整个ASP.NET Core 默认带有依赖注入(DI)，IServiceCollection是依赖注入的入口，下面实现了简易的一个类(Foo)和接口(IFoo),代码清单如下：
+* **IServiceCollection**：整个ASP.NET Core 默认带有依赖注入(DI)，IServiceCollection是依赖注入的入口，首先创建一个类(Foo)和接口(IFoo),代码清单如下：
 
 ```cs
 
@@ -104,7 +105,7 @@ public void ConfigureServices(IServiceCollection services)
 
 ```
 
-在Configure方法中注册中间件，让中间件在中间件的执行代码中使用注入的IFoo接口
+如果想在每次Http请求后都使用IFoo的GetFoo()放来来处理，上面讲到可以在Configure方法中注册函数，在注册过程中由于使用了依赖注入(DI)，因此可以直接通过`RequestServices.GetRequiredService<IFoo>()`泛型方法将IFoo对象在容器中取出。
 
 ```cs
 
@@ -116,7 +117,7 @@ app.Run((context) =>
 
 ```
 
-除了自己的接口外还可以通过扩展方法添加更多的注入方法，比如EntityFramework、mvc框架都实现自己的添加方法。
+除了自己的接口外,还支持通过扩展方法添加更多的注入方法，比如EntityFramework、mvc框架都实现自己的添加方法。
 
 ``` cs
 public void ConfigureServices(IServiceCollection services)
@@ -148,11 +149,11 @@ public void ConfigureServices(IServiceCollection services)
 ![调用示意](http://qiniu.xdpie.com/9748b3bdfa96bcfb20e7fc9108a0e177.png?imageView2/2/w/700)
 
 ### 1、中间件注册
-中间件的注册在startup中的Configure方法完成，在configure方法中使用IApplicationBuilder对象的Run、Map、Use方法传入匿名委托(delegate)。
+中间件的注册在startup中的Configure方法完成，在configure方法中使用IApplicationBuilder对象的Run、Map、Use方法传入匿名委托(delegate)。前面示例注册IFoo.GetFoo()方法就是一个典型的中间件。
 
-* Map:含有两个参数pathMatche和configuration，通过请求的url地址匹配相应的configuration。
+* **Map:** 含有两个参数pathMatche和configuration，通过请求的url地址匹配相应的configuration。
 
-** Run & Use:添加一个中间件至请求管道。它们在功能很类似但是也存在一些区别，先来看下两个方法的定义。
+* **Run & Use:** 添加一个中间件至请求管道。它们在功能很类似但是也存在一些区别，先来看下两个方法的定义。
 
 ``` cs
  public static IApplicationBuilder Use(this IApplicationBuilder app, Func<HttpContext, Func<Task>, Task> middleware);
@@ -204,6 +205,7 @@ app.Use((context, next) =>
 这里有一些官方的示例,[链接](https://github.com/Microsoft-Build-2016/CodeLabs-WebDev/tree/master/Module2-AspNetCore)
 
 
+---
 参考链接
 [1] https://docs.asp.net/en/latest/fundamentals/middleware.html
 [2] http://www.talkingdotnet.com/app-use-vs-app-run-asp-net-core-middleware/
