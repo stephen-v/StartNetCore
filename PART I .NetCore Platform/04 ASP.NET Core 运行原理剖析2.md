@@ -19,7 +19,8 @@
 Startup Class中含有两个重要方法：Configure方法用于每次http请求的处理，比如后面要讲的中间件(Middleware)，就是在configure方法中配置。而ConfigureServices方法在Configure方法前调用，它是一个可选的方法，可在configureServices依赖注入接口或一些全局的框架，比如EntityFramework、MVC等。
 
 ### 1、Configure方法
-在Configure方法中，通过入参的依赖注入(DI),可注入以下对象：
+
+**在Configure方法中，通过入参的依赖注入(DI),可注入以下对象：**
 
 * **`IApplicationBuilder`:** 用于构建应用请求管道。通过IApplicationBuilder下的run方法传入管道处理方法。这是最常用方法，对于一个真实环境的应用基本上都需要比如权限验证、跨域、异常处理等。下面代码调用IApplicationBuilder.use方法注册处理函数。拦截每个http请求，输出Hello World。
 
@@ -55,6 +56,8 @@ public void Configure(IApplicationBuilder app)
 
 
 ### 2、ConfigureServices
+
+**在ConfigureServices方法中，通过入参的依赖注入(DI),可注入以下对象：**
 
 * **IServiceCollection**：整个ASP.NET Core 默认带有依赖注入(DI)，IServiceCollection是依赖注入的入口，首先创建一个类(Foo)和接口(IFoo),代码清单如下：
 
