@@ -219,7 +219,7 @@ app.Use((context, next) =>
 ```
 ![Use](http://qiniu.xdpie.com/ffa7a5524a645ef32e4ea82290d66121.png?imageView2/2/w/700)
 
-* **Map:** 含有两个参数pathMatche和configuration，通过请求的url地址匹配相应的configuration。例如可以将url路径是/admin的处理函数指定为如下代码：
+* **Map:** 含有两个参数pathMatch和configuration，通过请求的url地址匹配相应的configuration。例如可以将url路径是/admin的处理函数指定为如下代码：
 
 ```cs
 app.Map("/admin", builder =>
