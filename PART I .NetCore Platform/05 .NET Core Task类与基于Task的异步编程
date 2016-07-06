@@ -1,0 +1,8 @@
+# .Net Core Task类与基于Task的异步编程
+
+并行任务(Task)以及基于Task的异步编程(asynchronously)在.NET Framework早已使用多年，
+而在微软新推出的.NET Core 平台下也有相同功能的实现，本文将依托于.NET Core，重温Task以及基于Task的异步编程。
+
+## Task
+
+## Async & Await 
