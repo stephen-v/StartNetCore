@@ -3,6 +3,35 @@
 并行任务(Task)以及基于Task的异步编程(asynchronously)在.NET Framework早已使用多年，
 而在微软新推出的.NET Core 平台下也有相同功能的实现，本文将依托于.NET Core，重温Task以及基于Task的异步编程。
 
-## Task
+## Task类
+在提到Task之前，不得不先讲下TPL(Task Parallel Library)。TPL是帮助开发者快速简单的开发并行和并发程序的一组API，
+在System.Threading and System.Threading.Tasks 名称空间下。整个TPL的核心在于Task类，Task类从表现上看很像之前的线程(Thread)和线程池(ThreadPool),
+但实际上具有很多不同，主要包括一下两方面：
 
-## Async & Await 
+* **更高效的使用系统资源**
+
+  Task相比线程和线程池而言优化了线程的调用算法，可以更好的共享和分配资源，也更轻量。
+
+* **更丰富的功能**
+
+  在task中提供更丰富的接口包括：waiting，cancellation、continuations、已经更好的异常处理，状态信息等。
+
+接下来简单介绍下Task的使用，在.Net Core中完全一致。
+
+  ### task创建
+
+  
+
+  ### task回调
+
+  ### task.result
+
+  ### task.wait
+
+
+## Async & Await
+
+
+----
+参考链接
+[1] https://msdn.microsoft.com/en-us/library/dd537609(v=vs.110).aspx
