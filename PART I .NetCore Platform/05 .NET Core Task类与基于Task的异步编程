@@ -1,37 +1,86 @@
 # .Net Core Task类与基于Task的异步编程
 
 并行任务(Task)以及基于Task的异步编程(asynchronously)在.NET Framework早已使用多年，
-而在微软新推出的.NET Core 平台下也有相同功能的实现，本文将依托于.NET Core，重温Task以及基于Task的异步编程。
+而在微软新推出的.NET Core 平台下也有相同功能的实现，本文将依托于.NET Core，介绍使用Task.result的同步编程以及
+使用await的异步编程模型。
 
-## Task类
-在提到Task之前，不得不先讲下TPL(Task Parallel Library)。TPL是帮助开发者快速简单的开发并行和并发程序的一组API，
-在System.Threading and System.Threading.Tasks 名称空间下。整个TPL的核心在于Task类，Task类从表现上看很像之前的线程(Thread)和线程池(ThreadPool),
-但实际上具有很多不同，主要包括一下两方面：
+## Task.Result
+Result方法可以返回Task执行后的结果，如下代码
 
-* **更高效的使用系统资源**
+```cs
 
-  Task相比线程和线程池而言优化了线程的调用算法，可以更好的共享和分配资源，也更轻量。
+public static async Task<JObject> GetJsonAsync(Uri uri)
+{
+  using (var client = new HttpClient())
+  {
+    var jsonString = await client.GetStringAsync(uri);
+    return JObject.Parse(jsonString);
+  }
+}
 
-* **更丰富的功能**
+public class MyController : ApiController
+{
+  public string Get()
+  {
+    var jsonTask = GetJsonAsync(...);
+    return jsonTask.Result.ToString();
+  }
+}
 
-  在task中提供更丰富的接口包括：waiting，cancellation、continuations、已经更好的异常处理，状态信息等。
+```
 
-接下来简单介绍下Task的使用，在.Net Core中完全一致。
+但是如果在ASP.NET Core的webapi中使用result方法来获取task输出值，
+会造成当前API线程阻塞等待到task执行完成后再继续进行。可以通过下面代码来证明，
+get方法有一个线程，调用一个新线程执行task（taskcaller），在执行task时候由于需要等待task的执行结果，
+此时get方法的执行线程等待中，直到result结果输出，此线程继续完成方法。
 
-  ### task创建
+```cs
+// GET api/values
+      [HttpGet]
+      public string Get()
+      {
+          var info = string.Format("api执行线程:{0}", Thread.CurrentThread.ManagedThreadId);
+          var infoTask = TaskCaller().Result;
+          var infoTaskFinished = string.Format("api执行线程（task调用完成后）:{0}", Thread.CurrentThread.ManagedThreadId);
+          return string.Format("{0},{1},{2}", info, infoTask, infoTaskFinished);
+      }
 
-  
+      private async Task<string> TaskCaller()
+      {
+          await Task.Delay(500);
+          return string.Format("task 执行线程:{0}", Thread.CurrentThread.ManagedThreadId);
+      }
 
-  ### task回调
+```
 
-  ### task.result
+输出结果如下：
+![result](http://qiniu.xdpie.com/7e3662b6cbda472f37752029ad591100.png)
 
-  ### task.wait
+## async & await
 
+如果使用await，在调用 await taskcall() 时不会阻塞get主方法线程，主方法线程会被释放，
+新的线程执行完成task后继续执行await后的代码减少线线程切换开销，同时也释放了资源。
 
-## Async & Await
+```cs
+[HttpGet]
+       public async Task<string> Get()
+       {
+           var info = string.Format("api执行线程:{0}", Thread.CurrentThread.ManagedThreadId);
+           var infoTask = await TaskCaller();
+           var infoTaskFinished = string.Format("api执行线程（task调用完成后）:{0}", Thread.CurrentThread.ManagedThreadId);
+           return string.Format("{0},{1},{2}", info, infoTask, infoTaskFinished);
+       }
 
+       private async Task<string> TaskCaller()
+       {
+           await Task.Delay(500);
+           return string.Format("task 执行线程:{0}", Thread.CurrentThread.ManagedThreadId);
+       }
 
-----
-参考链接
-[1] https://msdn.microsoft.com/en-us/library/dd537609(v=vs.110).aspx
+```
+
+![await](http://qiniu.xdpie.com/9f8367a3908228b2513124c422517aa6.png)
+
+## 总结
+Task.result 与 await关键字 具有类似的功能可以获取到任务的返回值，但是本质上Task.result会让外层函数执行线程阻塞直到任务执行完成，
+而使用await关键字外层函数线程则不会阻塞，而是通过任务执行线程来执行await后的代码。
