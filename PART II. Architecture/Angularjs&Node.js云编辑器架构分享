@@ -19,60 +19,57 @@
 
 ## 一、产品背景
 产品是一个内部项目，主要是基于语义网本体的云端编辑器，用于构建语义知识库。抛开语义网本体这些学术概念不谈
-，简单说就是一个简易的visual studio 云端编辑器。而图形显示是在百度脑图的基础上改进的，增加了自己的形状和颜色。
+，简单说就是一个简易的visual studio 云端编辑器。而图形显示则是在百度脑图的基础上改进的，增加了自己的形状和颜色，以及其他功能。
 
 ![总览图](http://qiniu.xdpie.com/03bdd9d074c95f8808c3256474994372.png)
 
 
-> 具体语义网、本体是什么()
+> 具体语义网、本体是什么 (http://baike.baidu.com/link?url=6ctsNtk-dthPu-3kiKK_JdMikArIfvbD4VMAQuc685--88X4lggwo58R-q6zKAGlVUcN_RlxQRr5rlPE3B12WK)
 
 ## 二、总体架构
 
-整个系统是由三层构成,分别为UI、API、Infrastructure,
+整个系统是由三层构成,分别为UI、API、Infrastructure:
 
 **UI层**
 
 UI层主要是用于用户交互界面，目前主要是基于Web的显示方式，未来可扩展移动app。web端采用单页面程序，
 所有数据通过ajax请求，最后通过nginx反向代理将前端站点和API站点部署在同一域名下。
 
-技术：Html5、Css3、Es5
-框架: agularjs
+`技术：Html5、Css3、Es5`
+`框架: agularjs`
 
 **API**
 
 在API层中主要提供UI端所需要的API以及对外的云API
 
-技术：node.js
-框架: express等
+`技术：node.js`
+`框架: express等`
 
 **Infrastructure**
 
 基础层主要提供知识库相关操作，以及数据相关操作,基础层主要是基于Apache jena()的封装。以及对阿里云一些服务的封装比如数据库，缓存等。
 
-技术: java
-框架:spring spring.data jena 等
+`技术: java`
+`框架:spring spring.data jena 等`
 
 ![总体](http://qiniu.xdpie.com/07f23d1d543f59d4ef87e01ceb04135e.png)
 
 ### 1. 前端架构
 
 #### a.前端层次
-前端主要是构建自己的编辑器以及在百度脑图源码的改进，由于业务复杂而多变，因此在逻辑上对前端进行了分层处理。系统由三层结构构成，
+前端核心功能是编辑器，由于业务复杂而多变，因此在逻辑上对前端进行了分层处理。系统由三层结构构成，
 由下至上分别为infrastructure、configuration、webapp构成，每层又含有若干模块。
 
 ![前端分层](http://qiniu.xdpie.com/21c1c700ab04f6e5a21f897dc2186466.png)
 
-
-
 ![代码结构](http://qiniu.xdpie.com/0dac19ff746ced13b4747a6e8583486f.png)
 
-在代码文件中app对应 webapp ， configuration对应 configuration层 ，lib 对应 infrastructure
-
+在代码文件中`app文件对应webapp层`，`configuration文件对应configuration层`，`lib文件对应infrastructure层`。
 
 **infrastructure层包含了系统所使用的基础框架，包括下面若干框架：**
 
-* Editor: kop前端团队的 WebIDE 布局框架，主要用于WebIDE的布局设计等。
-* Kity: 百度前端团队的 脑图框架，主要用于类图显示等。
+* Editor: 自行开发WebIDE布局框架，主要用于WebIDE的布局设计等。
+* Kity: 百度前端团队的脑图框架，主要用于类图显示等。
 * Util: Util主要涵盖了第三方的库例如jQuery、bootstrap、eventbus等除Editor和Kity外其他库均属于Util范畴。
 
 
@@ -83,12 +80,10 @@ UI层主要是用于用户交互界面，目前主要是基于Web的显示方式
 * ServiceConfiguration: 用于服务器端请求配置。
 * Theme: 定义了系统基本皮肤和皮肤扩展。
 
-webapp层包含了界面显示的四个单页面模块：
+webapp层包含了界面显示的页面模块均为单页面程序：
 
 * UserDashboard: 用户工作台入口，管理项目，新增项目等。
 * EditSpace: 编辑器工作区。
-* user-center账号管理。
-* user-login用户登录。
 
 #### b.核心基础模块设计
 
@@ -121,8 +116,6 @@ var Editor = require('/lib/editor-ui/src/editor/editor');
  containerLeft.addPanel(new Panel({name: 'left点击我隐藏1', templateHtml: 'left我是内容1'}));
  containerLeft.addPanel(new Panel({name: 'left点击我隐藏2', templateHtml: 'left我是内容2'}));
 ```
-
-在实际项目中我们采用了
 
 **MenuConfiguration**:用于应用程序顶部菜单和右键菜单的配置,由于菜单功能复杂包括多级，而且多变因此采用配置结构。
 其中顶部工具栏菜单最为复杂，因为选中内容不同需要动态隐藏或显示，因此采用了管道式处理方式，执行逻辑`双击或
@@ -208,11 +201,11 @@ var Panel = KOP.EditorUI.Panel;
 
 ![代码清单](http://qiniu.xdpie.com/4776542e241495f8581e2ffd9a194437.png)
 
-在每个模块中包含了单元测试(test),事件处理中心(event-handler),界面(html)，控制器(controller)如下图所示：
+在每个模块中包含了`单元测试(test)` `事件处理中心(event-handler)` `界面(html)` `控制器(controller)` 如下图所示：
 
 ![](http://qiniu.xdpie.com/5f6da80ebcf3a74dfc88759699e6713d.png)
 
-事件处理中心接受全局的事件，比如之前配置好的按钮的事件，其他模块与之通信的事件均是在事件模块中处理。
+事件处理中心接受全局的事件，比如之前配置好的按钮的事件，其他模块与之通信的事件,均是在事件模块中处理。
 
 ```javascript
 function onNewClass($scope) {
@@ -240,3 +233,8 @@ Nodejs端主要是对各种业务的组装，不再赘述，太多了。
 当前端需要发布时采用grunt对前端打包,如何打包请自行百度。
 
 ## 六、总结
+
+整个项目工作量很多，我们团队6人，在规定时间内完成，持续集成自动化部署给我们节约了很多时间，
+另外架构的设计让在开发过程中的需求微调赢的了时间。
+
+同时希望大家可以参与讨论，提出问题或更好的解决方案和工具，让大家一起进步。
