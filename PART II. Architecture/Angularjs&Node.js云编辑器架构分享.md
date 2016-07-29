@@ -87,11 +87,11 @@ webapp层包含了界面显示的页面模块均为单页面程序：
 
 #### b.核心基础模块设计
 
-**Edtior**：是编辑器的功能基础，用于控制编辑器窗口布局、分割、样式等，主要包括三个核心类
+**Edtior**：是编辑器的功能基础，用于控制编辑器窗口布局、分割、样式等，主要包括三个核心类：
 
 * Editor: 每个编辑器只有一个Editor对象，是编辑器的基础对象，其他对象都可以组合至Editor对象中。
-* Tabcontainer： Tabcontainer对象是editor下的一个区域对象，用于控制布局、定位、显示、变化等特性，在Editor中可以有多个Tabcontainer。
-* Panel： Panel对象是Tabcontainer下的一个内容对象，用于控制内容，一个Tabcontainer下可以有多个Panel实现对选项卡效果。
+* Tabcontainer：Tabcontainer对象是editor下的一个区域对象，用于控制布局、定位、显示、变化等特性，在Editor中可以有多个Tabcontainer。
+* Panel：Panel对象是Tabcontainer下的一个内容对象，用于控制内容，一个Tabcontainer下可以有多个Panel实现对选项卡效果。
 
 ```javascript
 var Editor = require('/lib/editor-ui/src/editor/editor');
@@ -117,22 +117,21 @@ var Editor = require('/lib/editor-ui/src/editor/editor');
  containerLeft.addPanel(new Panel({name: 'left点击我隐藏2', templateHtml: 'left我是内容2'}));
 ```
 
-**MenuConfiguration**:用于应用程序顶部菜单和右键菜单的配置,由于菜单功能复杂多变因此采用配置结构。
-其中顶部工具栏菜单最为复杂，因为选中内容不同需要动态隐藏或显示，因此采用了管道式处理方式，执行逻辑`双击或
-单击界面上的任何元素激发依次管道过滤，在管道过滤中每个按钮维护自己的过滤逻辑返回bool值告诉是否通过过滤`
+**MenuConfiguration**:用于应用程序顶部菜单和右键菜单的配置,由于菜单功能复杂多变因此采用配置结构。其中顶部工具栏菜单最为复杂，因为根据选中内容不同，需要动态隐藏或显示。我们采用了管道式处理方式，执行逻辑`双击或
+单击界面上的任何元素激发依次管道过滤，在管道过滤中每个按钮维护自己的过滤逻辑返回bool值告诉是否通过过滤`。
 
 ![toolbar](http://qiniu.xdpie.com/ffa31706c426e9d9f8a2e092a5cb9f0a.png?imageView2/2/w/700)
 
 
 ```json
-var contextMenuConfiguration = [{
-                                  "name": "新建本体",
-                                  "cssClass": "kop-tool-bar-ontology",
-                                  "disabledCssClass": "kop-tool-bar-ontology-disabled-icon",
-                                  "commandName": "toolbar/ontology/new",
-                                  "enableHandler": "newOntologyEnableHandler",
-                                  "children": []
-                                }];
+{
+	 "name": "新建本体",
+	 "cssClass": "kop-tool-bar-ontology",
+	 "disabledCssClass": "kop-tool-bar-ontology-disabled-icon",
+	 "commandName": "toolbar/ontology/new",
+	 "enableHandler": "newOntologyEnableHandler",
+	 "children": []
+ }
 ```
 
 **渲染按钮 的步骤如下：**
@@ -140,10 +139,10 @@ var contextMenuConfiguration = [{
 * 获取菜单中当前类型需要显示的按钮。
 * 根据按钮的类型图标等显示按钮。
 
-**动态改变按钮 （在选中文件不同时按钮会呈现可用和不可用状态） 的步骤如下：**
+**动态改变按钮 （在选中文件或元素不同时按钮会呈现可用和不可用状态） 的步骤如下：**
 
 * 双击或单击事件激活过滤管道
-* 执行按钮数组中所有commandEnable方法。
+* 执行按钮数组中所有enableHandler方法。
 * 返回为false时发起一个buttonstatusChanges事件。
 * 菜单controller接受此事件改变按钮数据，最终改变界面元素（双向绑定）。
 
@@ -215,7 +214,7 @@ function onNewClass($scope) {
 ```
 ### 2. Node.js端设计
 
-Nodejs端主要是对各种业务的组装，不再赘述，太多了。
+Nodejs端主要是对各种业务的组装，通过express框架暴露RestfulAPI,这里不再赘述。
 
 ## 三、单元测试
 
@@ -223,9 +222,9 @@ Nodejs端主要是对各种业务的组装，不再赘述，太多了。
 
 ## 四、持续集成及自动部署
 
-* 代码管理: gitlab
-* CI服务器: jenkins
-* 构建部署：docker
+* 代码管理: gitlab(本地部署)
+* CI服务器: jenkins(本地部署)
+* 构建部署：docker(本地部署)
 
 > 整个配置太多了就不讲解了，有需要可以留言
 
