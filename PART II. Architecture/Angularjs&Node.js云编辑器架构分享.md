@@ -18,10 +18,10 @@
 <!-- /TOC -->
 
 ## 一、产品背景
-产品是一个内部项目，主要是基于语义网本体的云端编辑器，用于构建语义知识库。抛开语义网本体这些学术概念不谈
+产品是一个内部项目，主要是`基于语义网本体的云端编辑器，用于构建语义知识库`。抛开语义网本体这些学术概念不谈
 ，简单说就是一个简易的visual studio 云端编辑器。而图形显示则是在百度脑图的基础上改进的，增加了自己的形状和颜色，以及其他功能。
 
-![总览图](http://qiniu.xdpie.com/03bdd9d074c95f8808c3256474994372.png)
+![总览图](http://qiniu.xdpie.com/03bdd9d074c95f8808c3256474994372.png?imageView2/2/w/700)
 
 
 > 具体语义网、本体是什么 (http://baike.baidu.com/link?url=6ctsNtk-dthPu-3kiKK_JdMikArIfvbD4VMAQuc685--88X4lggwo58R-q6zKAGlVUcN_RlxQRr5rlPE3B12WK)
@@ -40,19 +40,19 @@ UI层主要是用于用户交互界面，目前主要是基于Web的显示方式
 
 **API**
 
-在API层中主要提供UI端所需要的API以及对外的云API
+在API层中主要提供UI端所需要的API以及对外的云API。
 
 `技术：node.js`
 `框架: express等`
 
 **Infrastructure**
 
-基础层主要提供知识库相关操作，以及数据相关操作,基础层主要是基于Apache jena()的封装。以及对阿里云一些服务的封装比如数据库，缓存等。
+基础层主要提供知识库相关操作，以及数据相关操作,基础层主要是基于Apache jena（Jena是一个语义网本体框架）的封装。以及对阿里云一些服务的封装比如数据库，缓存等。
 
 `技术: java`
 `框架:spring spring.data jena 等`
 
-![总体](http://qiniu.xdpie.com/07f23d1d543f59d4ef87e01ceb04135e.png)
+![总体](http://qiniu.xdpie.com/07f23d1d543f59d4ef87e01ceb04135e.png?imageView2/2/w/700)
 
 ### 1. 前端架构
 
@@ -60,9 +60,9 @@ UI层主要是用于用户交互界面，目前主要是基于Web的显示方式
 前端核心功能是编辑器，由于业务复杂而多变，因此在逻辑上对前端进行了分层处理。系统由三层结构构成，
 由下至上分别为infrastructure、configuration、webapp构成，每层又含有若干模块。
 
-![前端分层](http://qiniu.xdpie.com/21c1c700ab04f6e5a21f897dc2186466.png)
+![前端分层](http://qiniu.xdpie.com/21c1c700ab04f6e5a21f897dc2186466.png?imageView2/2/w/700)
 
-![代码结构](http://qiniu.xdpie.com/0dac19ff746ced13b4747a6e8583486f.png)
+![代码结构](http://qiniu.xdpie.com/0dac19ff746ced13b4747a6e8583486f.png?imageView2/2/w/700)
 
 在代码文件中`app文件对应webapp层`，`configuration文件对应configuration层`，`lib文件对应infrastructure层`。
 
@@ -121,7 +121,7 @@ var Editor = require('/lib/editor-ui/src/editor/editor');
 其中顶部工具栏菜单最为复杂，因为选中内容不同需要动态隐藏或显示，因此采用了管道式处理方式，执行逻辑`双击或
 单击界面上的任何元素激发依次管道过滤，在管道过滤中每个按钮维护自己的过滤逻辑返回bool值告诉是否通过过滤`
 
-![toolbar](http://qiniu.xdpie.com/ffa31706c426e9d9f8a2e092a5cb9f0a.png)
+![toolbar](http://qiniu.xdpie.com/ffa31706c426e9d9f8a2e092a5cb9f0a.png?imageView2/2/w/700)
 
 
 ```json
@@ -149,9 +149,9 @@ var contextMenuConfiguration = [{
 
 除此之外还包括`FileConfiguration`和`ServiceConfiguration`,用于文件显示图标和右键菜单的配置
 
-![新建菜单](http://qiniu.xdpie.com/5a3ce4523c7c79f8d4866855d62c36fa.png)
+![新建菜单](http://qiniu.xdpie.com/5a3ce4523c7c79f8d4866855d62c36fa.png?imageView2/2/w/700)
 
-![文件图标](http://qiniu.xdpie.com/62f29967f30b7f99d76948cdd2273ff8.png)
+![文件图标](http://qiniu.xdpie.com/62f29967f30b7f99d76948cdd2273ff8.png?imageView2/2/w/700)
 
 ``` json
 var fileConfiguration =[{
@@ -197,13 +197,13 @@ var Panel = KOP.EditorUI.Panel;
            headBarContainer.addPanel(new Panel({template: editSpaceTemplateConfiguration.headBarTemplate}));
 ```
 
-![模块分区](http://qiniu.xdpie.com/48c2974269d3394822ae127665a59a6a.png)
+![模块分区](http://qiniu.xdpie.com/48c2974269d3394822ae127665a59a6a.png?imageView2/2/w/700)
 
-![代码清单](http://qiniu.xdpie.com/4776542e241495f8581e2ffd9a194437.png)
+![代码清单](http://qiniu.xdpie.com/4776542e241495f8581e2ffd9a194437.png?imageView2/2/w/700)
 
 在每个模块中包含了`单元测试(test)` `事件处理中心(event-handler)` `界面(html)` `控制器(controller)` 如下图所示：
 
-![](http://qiniu.xdpie.com/5f6da80ebcf3a74dfc88759699e6713d.png)
+![](http://qiniu.xdpie.com/5f6da80ebcf3a74dfc88759699e6713d.png?imageView2/2/w/700)
 
 事件处理中心接受全局的事件，比如之前配置好的按钮的事件，其他模块与之通信的事件,均是在事件模块中处理。
 
