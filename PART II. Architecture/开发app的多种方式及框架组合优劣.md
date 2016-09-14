@@ -1,4 +1,16 @@
-# 几款开源的hybird移动app框架分析
+# 几款开源的Hybrid移动app框架分析
+
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [几款开源的Hybrid移动app框架分析](#几款开源的hybrid移动app框架分析)
+	- [Ionic](#ionic)
+	- [Onsen UI](#onsen-ui)
+		- [与 ionic 相比](#与-ionic-相比)
+	- [jQuery Mobile](#jquery-mobile)
+	- [Mobile Angular UI](#mobile-angular-ui)
+	- [结论](#结论)
+
+<!-- /TOC -->
 
 很多移动开发者喜欢使用原生代码开发，但这种方式并不是一个银弹，在需要快速以及低成本开发的时候Hybrid App（混合应用）就体现了它的优势。
 
@@ -18,6 +30,18 @@ HTM5, CSS and JavaScript。如果你已经是一个web开发者了那么选择hy
 ionic添加了对android材料设计的支持，同时ionic也包括了angular。像其他流行的Hybrid App框架一样，ionic也可以利用cordova来实现对原生硬件的调用。
 
 ionic框架具有可维护性和可扩展性，使用了简单清晰的标记，大量移动端特殊优化的css(Sass),HTML5 and JavaScript 组件。
+
+**优点：**
+
+* 基于Angularjs
+* 预置的类原生组件
+* 强大的社区
+
+** 缺点：**
+
+* 需要了解Angularjs
+* 插件更新较慢
+* 动画性能较弱
 
 [官方网站](http://ionicframework.com/)
 
