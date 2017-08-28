@@ -1,6 +1,5 @@
 # 1. Tensorflow开发环境配置及其基本概念
 
-vicky
 
 ## 1.1. 安装Tensorflow开发环境
 
