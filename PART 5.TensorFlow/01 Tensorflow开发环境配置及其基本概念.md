@@ -5,7 +5,7 @@ vicky
 ## 1.1. 安装Tensorflow开发环境
 
 ## 1.2. Tensorflow基本概念
-
+vicky1vicky
 
 ### 计算图（The Computational Graph）
 Tensorflow是一个通过计算图的形式来表述计算的编程系统，计算图也叫数据流图，可以把计算图看做是一种有向图，Tensorflow中的每一个计算都是计算图上的一个节点，而节点之间的边描述了计算之间的依赖关系。
