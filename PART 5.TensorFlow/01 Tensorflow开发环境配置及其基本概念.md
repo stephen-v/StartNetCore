@@ -84,7 +84,7 @@ print(sess.run([node1, node2]))
 [3.0, 4.0]
 ```
 
-我们还可以通过操作符构建各位复杂的`Tesnor Nodes`
+我们还可以通过操作符构建各种复杂的`Tesnor Nodes`
 
 ```Python
 node3 = tf.add(node1, node2)
@@ -128,7 +128,7 @@ print(sess.run(add_and_triple, {a: 3, b: 4.5}))
 
 ![2017-08-28-17-05-03](http://qiniu.xdpie.com/2017-08-28-17-05-03.png)
 
-在机器学习中，我们希望看到一个可随意输入的模型，就像上面代码清单一样，为让模型可以训练，我们需要能够修改图获得新的输出。`Variables`允许添加添加可训练参数，如果使用见如下代码清单：
+在机器学习中，我们希望看到一个可随意输入的模型，就像上面代码清单一样，为让模型可以训练，我们需要能够修改图获得新的输出。`Variables`允许添加可训练参数，如果使用如下代码清单：
 
 ```Python
 W = tf.Variable([.3], dtype=tf.float32)
@@ -139,7 +139,7 @@ init = tf.global_variables_initializer()
 print(sess.run(linear_model, {x: [1, 2, 3, 4]}))
 ```
 
-许多的算法依赖于矩阵的操作，在Tensorflow中给我们提供非常方便，快捷的矩阵运算
+许多的算法依赖于矩阵的操作，Tensorflow给我们提供了非常方便，快捷的矩阵运算。
 
 ```Python
 # 生成对角线矩阵
