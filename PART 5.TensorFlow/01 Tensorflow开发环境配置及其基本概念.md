@@ -59,8 +59,72 @@ Pycharm，以及Python3.6都安装完毕，接着打开Pycharm，在File > Defau
 
 ## 1.2. Tensorflow基本概念
 
-### 计算图（The Computational Graph）
-Tensorflow是一个通过计算图的形式来表述计算的编程系统，计算图也叫数据流图，可以把计算图看做是一种有向图，Tensorflow中的每一个计算都是计算图上的一个节点，而节点之间的边描述了计算之间的依赖关系。
+### 1.2.1 声明Tensor
+在Tensorflow中，tensor是数据的核心单元，也可以称作向量或多维向量，一个tensor组成了一个任意维数的数组的初始值模型，而一个tensor的秩（rank）是就是它的维数，这里有一些例子。
+
+```Python
+3  #秩为0的tensor，是一个标量，shape[]
+[1., 2., 3.]  #秩为1的tensor，是一个向量，shape[3]
+[1., 2., 3.], [4., 5., 6.]]  #秩为2的tensor,是一个矩阵，shape[2,3]
+[[[1., 2., 3.]], [[7., 8., 9.]]]  #秩为3的tensor,shape[2, 1, 3]
+```
+
+如何声明一个tensor？请参见如下代码。
+
+```Python
+import tensorflow as tf
+
+#声明固定tensor
+zero_tsr = tf.zeros([2, 3])  #声明一个2行3列矩阵，矩阵元素全为0
+filled_tsr = tf.fill([4, 3], 42)  #声明一个4行3列的矩阵，矩阵元素全部为42
+constant_tsr = tf.constant([1, 2, 3])  #声明一个常量，行向量[1 2 3]
+
+#声明连续tensor
+linear_tsr = tf.range(start=6, limit=15, delta=3)  #[6, 9, 12]
+
+#声明随机tensor
+randnorm_tsr = tf.random_normal([2, 3], mean=0.0, stddev=1.0)  #[[ 0.68031377  1.2489816  -1.50686061], [-1.37892687 -1.04466891 -1.21666121]]
+```
+注意，```tf.constant()```函数可以用来把一个值传播给一个数组，比如通过这样的声明```tf.constant(42, [4, 3])```来模拟```tf.fill([4, 3], 42)```的行为。
+
+### 1.2.2 变量和占位符
+#### 变量
+变量是算法的参数，Tensorflow追踪这些变量并在算法中优化他们。```Variable()```函数用来声明一个变量，并把一个tensor作为输入，同时输出一个变量。使用该函数仅仅是声明了变量，我们还需要初始化变量，以下代码是关于如果声明和初始化一个变量的例子。
+```Python
+my_var = tf.Variable(tf.zeros([2,3]))   
+init = tf.global_variables_initializer()
+print(sess.run(init))
+print(sess.run(my_var))
+
+---result
+
+[[ 0.  0.  0.]
+ [ 0.  0.  0.]]
+```
+这里请注意一个问题，当你调用```tf.constant()```函数的时候，声明的常量就已经被初始化了，它们的值永远不变。而相反，当你调用```tf.Variable()```函数的时候，变量并没有被初始化，为了初始化所有的变量，你必须要运行一次如下代码：
+```
+init = tf.global_variables_initializer()
+sess.run(init)
+
+#init是初始化所有的全局变量，在没有调用sess.run()之前，变量都没有被初始化。
+```
+#### 占位符
+
+占位符是一个对象，你可以对它赋予不同类型和维度的数据，它依赖于计算图的结果，比如一个计算的期望输出。占位符犹如它的名字一样仅仅为要注入到计算图中的数据占据一个位置。声明占位符用```tf.placeholder()```函数，以下是一个例子：
+```
+x = tf.placeholder(tf.float32, shape=[2,2])
+y = tf.identity(x)
+x_vals = np.random.rand(2,2)
+sess.run(y, feed_dict={x: x_vals})
+
+---result
+
+[[ 0.11068643  0.57449234]
+ [ 0.26858184  0.83333433]]
+```
+
+### 1.2.3 计算图（The Computational Graph）
+Tensorflow是一个通过计算图的形式来表述计算的编程系统，计算图也叫数据流图，可以把计算图看做是一种有向图，Tensorflow中的每一个计算都是计算图上的一个节点，而节点之间的边描述了计算之间的依赖关系。Tensorflow在创建Tensor的同时，并没有把任何值都加入到计算图中。
 
 看如下代码清单：
 
@@ -135,11 +199,13 @@ W = tf.Variable([.3], dtype=tf.float32)
 b = tf.Variable([-.3], dtype=tf.float32)
 x = tf.placeholder(tf.float32)
 linear_model = W * x + b
-sess = tf.Session()
 init = tf.global_variables_initializer()
 sess.run(init)
 print(sess.run(linear_model, {x: [1, 2, 3, 4]}))
 
+---result
+
+[ 0.          0.30000001  0.60000002  0.90000004]
 ```
 
 许多的算法依赖于矩阵的操作，Tensorflow给我们提供了非常方便，快捷的矩阵运算。
@@ -182,4 +248,24 @@ print(sess.run(D))
  [-3. -7. -1.]
  [ 0.  5. -2.]]
 ```
-
+### 1.2.4 声明运算符
+Tensor具有很多标准的运算符，如```add()```，```sub()```，```mul()```，```div()```等，除了这些标准的运算符外，Tensorflow给我们提供了更多的运算符。以下是一个基础的数学函数列表，所有的这些函数都是按元素操作。
+| 运算符      | 描述                             | 
+| -----------|:-------------:                   |
+| abs()      |计算一个输入tensor的绝对值          |
+| ceil()     |一个输入tensor的顶函数              |
+| cos()      |Cosine函数          C               |
+| exp()      |底数为e的指数函数，指数为输入的tensor |
+| floor()    |一个输入tensor的底函数               |
+| inv()      |一个输入tensor的倒数函数，(1/x)      |
+| log()      |一个输入tensor的自然对数             |
+| maximum()  |取两个tensor中的最大的一个           |
+| minimum()  |取两个tensor中的最小的一个           |
+| neg()      |对一个tensor取负值                  |
+| pow()      |第一个tensor是第二个tensor的幂       |
+| round()    |舍入最接近的整数                    |
+| rsqrt()    |计算一个tensor的平方根后求倒         |
+| sign()     |根据tensor的符号返回-1，0，1中的某个值|
+| sin()      |Sine函数                            |
+| sqrt()     |计算一个输入tensor的平方根           |
+| square()   |计算一个输入的tensor的平方           |
