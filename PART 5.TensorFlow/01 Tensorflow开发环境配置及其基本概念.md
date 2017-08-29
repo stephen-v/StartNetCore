@@ -135,8 +135,11 @@ W = tf.Variable([.3], dtype=tf.float32)
 b = tf.Variable([-.3], dtype=tf.float32)
 x = tf.placeholder(tf.float32)
 linear_model = W * x + b
+sess = tf.Session()
 init = tf.global_variables_initializer()
+sess.run(init)
 print(sess.run(linear_model, {x: [1, 2, 3, 4]}))
+
 ```
 
 许多的算法依赖于矩阵的操作，在Tensorflow中给我们提供非常方便，快捷的矩阵运算
