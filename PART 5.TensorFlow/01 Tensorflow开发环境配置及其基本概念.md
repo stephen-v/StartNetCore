@@ -251,7 +251,7 @@ print(sess.run(D))
 ### 1.2.4 声明运算符
 Tensor具有很多标准的运算符，如```add()```，```sub()```，```mul()```，```div()```等，除了这些标准的运算符外，Tensorflow给我们提供了更多的运算符。以下是一个基础的数学函数列表，所有的这些函数都是按元素操作。
 | 运算符      | 描述                             | 
-| -----------|:-------------:                   |
+| -----------|-------------                     |
 | abs()      |计算一个输入tensor的绝对值          |
 | ceil()     |一个输入tensor的顶函数              |
 | cos()      |Cosine函数          C               |
@@ -263,9 +263,22 @@ Tensor具有很多标准的运算符，如```add()```，```sub()```，```mul()``
 | minimum()  |取两个tensor中的最小的一个           |
 | neg()      |对一个tensor取负值                  |
 | pow()      |第一个tensor是第二个tensor的幂       |
-| round()    |舍入最接近的整数                    |
-| rsqrt()    |计算一个tensor的平方根后求倒         |
-| sign()     |根据tensor的符号返回-1，0，1中的某个值|
-| sin()      |Sine函数                            |
-| sqrt()     |计算一个输入tensor的平方根           |
-| square()   |计算一个输入的tensor的平方           |
+| round()    |舍入最接近的整数                     |
+| rsqrt()    |计算一个tensor的平方根后求倒          |
+| sign()     |根据tensor的符号返回-1，0，1中的某个值 |
+| sin()      |Sine函数                             |
+| sqrt()     |计算一个输入tensor的平方根            |
+| square()   |计算一个输入的tensor的平方            |
+
+下面还有一些值得我们了解的函数，这些函数在机器学习中比较常用，Tensorflow已经包装好了。
+| 运算符                 | 描述       | 
+| ----------------------|------------|
+| digamma()             |计算lgamma函数的导数                      |
+| erf()                 |计算tensor的高斯误差                      |
+| erfc()                |计算tensor的高斯互补误差                  |
+| igamma()              |计算gamma(a, x)/gamma(a),gamma(a,x)=\intergral_from_0_to_x t^(a-1) *exp^(-t)dt             |
+| igammac()             |计算gamma(a,x)/gamma(a),gamma(a,x)=\intergral_from_x_to_inf t^(a-1) *exp^(-t)dt             |
+| lbeta()               |计算自然对数的beta函数的绝对值             |
+| lgamma()              |计算自然对数的gamma函数的绝对值            |
+| squared_difference()  |计算两个tensor的误差平方                  |
+
