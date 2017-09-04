@@ -1,10 +1,32 @@
-# 1. Tensorflow开发环境配置及其基本概念
+<a id="markdown-tensorflow开发环境配置及其基本概念" name="tensorflow开发环境配置及其基本概念"></a>
+# Tensorflow开发环境配置及其基本概念
 
 
+<!-- TOC -->
+
+- [Tensorflow开发环境配置及其基本概念](#tensorflow开发环境配置及其基本概念)
+    - [1.1. 安装Tensorflow开发环境](#11-安装tensorflow开发环境)
+        - [1.1.1. 安装pycharm](#111-安装pycharm)
+        - [1.1.2. 安装pythe3.6](#112-安装pythe36)
+        - [1.1.3. 安装Tensorflow](#113-安装tensorflow)
+    - [1.2. Tensorflow基本概念](#12-tensorflow基本概念)
+        - [1.2.1. 声明Tensor](#121-声明tensor)
+        - [1.2.2. 变量和占位符](#122-变量和占位符)
+            - [1.2.2.1. 变量](#1221-变量)
+            - [1.2.2.2. 占位符](#1222-占位符)
+        - [1.2.3. 计算图（The Computational Graph）](#123-计算图（the-computational-graph）)
+        - [1.2.4. 矩阵操作](#124-矩阵操作)
+        - [1.2.5. 声明运算符](#125-声明运算符)
+
+<!-- /TOC -->
+
+<a id="markdown-11-安装tensorflow开发环境" name="11-安装tensorflow开发环境"></a>
 ## 1.1. 安装Tensorflow开发环境
+<a id="markdown-111-安装pycharm" name="111-安装pycharm"></a>
 ### 1.1.1. 安装pycharm
 Pycharm目前是机器学习中最普遍，最收欢迎的工具之一，它强大，具有亲和力，正如它的名字一样魅力无穷。Pycharm官网上有专业版和社区版，社区版是免费的，仅做数据科学方面的研究的话社区版也足够开发使用了，Windows系统的下载地址为：https://www.jetbrains.com/pycharm/download/#section=windows， 下载完成后就可以安装了，安装无需做特别的设置，默认安装就可以了。
 
+<a id="markdown-112-安装pythe36" name="112-安装pythe36"></a>
 ### 1.1.2. 安装pythe3.6
 tensorflow需要运行在python3.4及以上版本，在这个问题上我就出错过一次。之前我电脑上的python版本为2.7，一开始我没有注意到这种情况，我就直接在pycharm中打开File > Default Setting > Project Interpreter，查找tensorflow然后点击安装，结果报错了（如图1-1，1-2所示），错误的提示信息也让人摸不着头脑，查阅了一些资料猛的才发现是我的python版本出了问题，于是毫不犹豫的去下载python3.6（目前已更新到3.6.2版本了），下载地址为官网：https://www.python.org/getit/， 注意python3.6版本已经不支持Win32位的系统了，只有Win64位的安装包，下载如图1-3所示的红色框中的安装包。
 
@@ -33,6 +55,7 @@ tensorflow需要运行在python3.4及以上版本，在这个问题上我就出�
 ![2017-08-29-09-54-24](http://qiniu.xdpie.com/2017-08-29-09-54-24.png?imageView2/2/w/700&_=5603928)
 图1-7
 
+<a id="markdown-113-安装tensorflow" name="113-安装tensorflow"></a>
 ### 1.1.3. 安装Tensorflow
 Pycharm，以及Python3.6都安装完毕，接着打开Pycharm，在File > Default Setting > Project Interpreter中点击设置图片按钮，选择Create VirtualEnv，如图1-8所示，表示新建一个虚拟环境。建立虚拟环境的目的是为了方便以后便捷、快速的安装各种库或插件，以及以后的程序执行等都在该虚拟环境下运行。点击“Create VirtualEnv”后跳出新建虚拟环境对话框，图1-9所示，在“Name”处为虚拟环境命名，“Location”是指虚拟环境的安装路径，注意不要与python3.6的安装目录相同，“Base interpreter”处选择python3.6的安装目录下的python.exe文件，设置完成后，Pycharm会为你新建好一个3.6版本的虚拟环境，如图1-10所示。
 
@@ -57,12 +80,14 @@ Pycharm，以及Python3.6都安装完毕，接着打开Pycharm，在File > Defau
 
 至此，我们的工具，环境都已经安装，配置好了，下面的章节我们将了解Tensorflow的概念和用法，开始我们的数据科学之旅。
 
+<a id="markdown-12-tensorflow基本概念" name="12-tensorflow基本概念"></a>
 ## 1.2. Tensorflow基本概念
 
+<a id="markdown-121-声明tensor" name="121-声明tensor"></a>
 ### 1.2.1. 声明Tensor
 在Tensorflow中，tensor是数据的核心单元，也可以称作向量或多维向量，一个tensor组成了一个任意维数的数组的初始值模型，而一个tensor的秩（rank）是就是它的维数，这里有一些例子。
 
-```Python
+```python
 3  #秩为0的tensor，是一个标量，shape[]
 [1., 2., 3.]  #秩为1的tensor，是一个向量，shape[3]
 [1., 2., 3.], [4., 5., 6.]]  #秩为2的tensor,是一个矩阵，shape[2,3]
@@ -71,7 +96,7 @@ Pycharm，以及Python3.6都安装完毕，接着打开Pycharm，在File > Defau
 
 如何声明一个tensor？请参见如下代码。
 
-```Python
+```python
 import tensorflow as tf
 
 #声明固定tensor
@@ -87,10 +112,13 @@ randnorm_tsr = tf.random_normal([2, 3], mean=0.0, stddev=1.0)  #[[ 0.68031377  1
 ```
 注意，```tf.constant()```函数可以用来把一个值传播给一个数组，比如通过这样的声明```tf.constant(42, [4, 3])```来模拟```tf.fill([4, 3], 42)```的行为。
 
+<a id="markdown-122-变量和占位符" name="122-变量和占位符"></a>
 ### 1.2.2. 变量和占位符
+<a id="markdown-1221-变量" name="1221-变量"></a>
 #### 1.2.2.1. 变量
 变量是算法的参数，Tensorflow追踪这些变量并在算法中优化他们。```Variable()```函数用来声明一个变量，并把一个tensor作为输入，同时输出一个变量。使用该函数仅仅是声明了变量，我们还需要初始化变量，以下代码是关于如果声明和初始化一个变量的例子。
-```Python
+```python
+
 my_var = tf.Variable(tf.zeros([2,3]))   
 init = tf.global_variables_initializer()
 print(sess.run(init))
@@ -100,18 +128,22 @@ print(sess.run(my_var))
 
 [[ 0.  0.  0.]
  [ 0.  0.  0.]]
+
 ```
 这里请注意一个问题，当你调用```tf.constant()```函数的时候，声明的常量就已经被初始化了，它们的值永远不变。而相反，当你调用```tf.Variable()```函数的时候，变量并没有被初始化，为了初始化所有的变量，你必须要运行一次如下代码：
-```
+```python
+
 init = tf.global_variables_initializer()
 sess.run(init)
 
 #init是初始化所有的全局变量，在没有调用sess.run()之前，变量都没有被初始化。
+
 ```
+<a id="markdown-1222-占位符" name="1222-占位符"></a>
 #### 1.2.2.2. 占位符
 
 占位符是一个对象，你可以对它赋予不同类型和维度的数据，它依赖于计算图的结果，比如一个计算的期望输出。占位符犹如它的名字一样仅仅为要注入到计算图中的数据占据一个位置。声明占位符用```tf.placeholder()```函数，以下是一个例子：
-```
+```python
 x = tf.placeholder(tf.float32, shape=[2,2])
 y = tf.identity(x)
 x_vals = np.random.rand(2,2)
@@ -123,12 +155,13 @@ sess.run(y, feed_dict={x: x_vals})
  [ 0.26858184  0.83333433]]
 ```
 
+<a id="markdown-123-计算图the-computational-graph" name="123-计算图the-computational-graph"></a>
 ### 1.2.3. 计算图（The Computational Graph）
 Tensorflow是一个通过计算图的形式来表述计算的编程系统，计算图也叫数据流图，可以把计算图看做是一种有向图，Tensorflow中的每一个计算都是计算图上的一个节点，而节点之间的边描述了计算之间的依赖关系。Tensorflow在创建Tensor的同时，并没有把任何值都加入到计算图中。
 
 看如下代码清单：
 
-```Python
+```python
 import tensorflow as tf
 node1 = tf.constant(3.0, dtype=tf.float32)
 node2 = tf.constant(4.0) # also tf.float32 implicitly
@@ -140,7 +173,7 @@ Tensor("Const:0", shape=(), dtype=float32) Tensor("Const_1:0", shape=(), dtype=f
 ```
 可以看到输出的并不是我们所期望的3.0 和 4.0 数字，而是一个`node`,通过`sesson`可计算出`node`的实际值。
 
-```Python
+```python
 sess = tf.Session()
 print(sess.run([node1, node2]))
 
@@ -150,7 +183,7 @@ print(sess.run([node1, node2]))
 
 我们还可以通过操作符构建各种复杂的`Tesnor Nodes`
 
-```Python
+```python
 node3 = tf.add(node1, node2)
 print("node3:", node3)
 print("sess.run(node3):", sess.run(node3))
@@ -164,7 +197,7 @@ sess.run(node3): 7.0
 
 上面的计算我们都是建立在静态的数据上，Tensorflow还提供了`palceholder`用于后期输入值的一个占位符
 
-```Python
+```python
 
 a = tf.placeholder(tf.float32)
 b = tf.placeholder(tf.float32)
@@ -181,7 +214,7 @@ print(sess.run(adder_node, {a: [1, 3], b: [2, 4]}))
 ```
 还可以再上面的计算途中加入更多操作，见下代码清单：
 
-```Python
+```python
 
 add_and_triple = adder_node * 3.
 print(sess.run(add_and_triple, {a: 3, b: 4.5}))
@@ -196,7 +229,7 @@ print(sess.run(add_and_triple, {a: 3, b: 4.5}))
 
 在机器学习中，我们希望看到一个可随意输入的模型，就像上面代码清单一样，为让模型可以训练，我们需要能够修改图获得新的输出。`Variables`允许添加可训练参数，如果使用如下代码清单：
 
-```Python
+```python
 W = tf.Variable([.3], dtype=tf.float32)
 b = tf.Variable([-.3], dtype=tf.float32)
 x = tf.placeholder(tf.float32)
@@ -212,7 +245,7 @@ print(sess.run(linear_model, {x: [1, 2, 3, 4]}))
 
 接下来我们将计算图变得更为复杂，代码清单如下：
 
-```Python
+```python
 
 sess = tf.Session()
 
@@ -248,10 +281,11 @@ for x_val in x_vals:
 
 ![2017-08-29-15-01-44](http://qiniu.xdpie.com/2017-08-29-15-01-44.png?imageView2/2/w/700&_=5603928)
 
+<a id="markdown-124-矩阵操作" name="124-矩阵操作"></a>
 ### 1.2.4. 矩阵操作
 许多的算法依赖于矩阵的操作，Tensorflow给我们提供了非常方便，快捷的矩阵运算。
 
-```Python
+```python
 # 生成对角线矩阵
 identity_matrix = tf.diag([1.0, 1.0, 1.0])
 # 随机填充2行3列矩阵
@@ -289,8 +323,10 @@ print(sess.run(D))
  [-3. -7. -1.]
  [ 0.  5. -2.]]
 ```
+<a id="markdown-125-声明运算符" name="125-声明运算符"></a>
 ### 1.2.5. 声明运算符
 Tensor具有很多标准的运算符，如```add()```，```sub()```，```mul()```，```div()```等，除了这些标准的运算符外，Tensorflow给我们提供了更多的运算符。以下是一个基础的数学函数列表，所有的这些函数都是按元素操作。
+
 | 运算符      | 描述                             | 
 | -----------|-------------                     |
 | abs()      |计算一个输入tensor的绝对值          |
@@ -312,6 +348,7 @@ Tensor具有很多标准的运算符，如```add()```，```sub()```，```mul()``
 | square()   |计算一个输入的tensor的平方            |
 
 下面还有一些值得我们了解的函数，这些函数在机器学习中比较常用，Tensorflow已经包装好了。
+
 | 运算符                 | 描述       | 
 | ----------------------|------------|
 | digamma()             |计算lgamma函数的导数                      |

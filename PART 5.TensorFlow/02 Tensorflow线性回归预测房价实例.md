@@ -1,20 +1,20 @@
-<a id="markdown-1-tensorflow梯度下降与损失函数" name="1-tensorflow梯度下降与损失函数"></a>
-# 1. Tensorflow梯度下降与损失函数
+<a id="markdown-1-tensorflow-线性回归预测房价实例" name="1-tensorflow-线性回归预测房价实例"></a>
+# 1. Tensorflow 线性回归预测房价实例
 
 >在本节中将通过一个预测房屋价格的实例来讲解梯度下降和损失函数的原理，以及在tensorflow中如何实现
 <!-- TOC -->
 
-- [1. Tensorflow梯度下降与损失函数](#1-tensorflow梯度下降与损失函数)
+- [1. Tensorflow 线性回归预测房价实例](#1-tensorflow-线性回归预测房价实例)
     - [1.1. 准备工作](#11-准备工作)
     - [1.2. 归一化数据](#12-归一化数据)
-    - [1.3. 用随机的值填充a,b并计算误差，误差采用上文所使用SSE(和方差)](#13-用随机的值填充ab并计算误差误差采用上文所使用sse和方差)
+    - [1.3. 用随机的值填充a,b并计算误差，误差采用上文所使用SSE(和方差)](#13-用随机的值填充ab并计算误差，误差采用上文所使用sse和方差)
     - [1.4. 计算误差梯度](#14-计算误差梯度)
     - [1.5. 调整参数直到SSE参数最小](#15-调整参数直到sse参数最小)
     - [1.6. 概念](#16-概念)
-        - [1.6.1 简单线性回归](#161-简单线性回归)
-        - [1.6.2 梯度下降](#162-梯度下降)
-            - [梯度](#梯度)
-            - [步长](#步长)
+        - [1.6.1. 简单线性回归](#161-简单线性回归)
+        - [1.6.2. 梯度下降](#162-梯度下降)
+            - [1.6.2.1. 梯度](#1621-梯度)
+            - [1.6.2.2. 步长](#1622-步长)
 
 <!-- /TOC -->
 <a id="markdown-11-准备工作" name="11-准备工作"></a>
@@ -51,7 +51,7 @@ $$\frac{x-x_{min}}{x_{max}-x_{min}}$$
 
 ![2017-09-01-14-04-28](http://qiniu.xdpie.com/2017-09-01-14-04-28.png?imageView2/2/w/700&_=5603928)
 
-```Python
+```python
 
 def normalize(arr):
     arr_min = np.min(arr)
@@ -69,7 +69,7 @@ def normalize(arr):
 
 ![2017-09-01-14-07-11](http://qiniu.xdpie.com/2017-09-01-14-07-11.png?imageView2/2/w/700&_=5603928)
 
-```Python
+```python
 
 def model(x, b, a):
     # linear regression is just b*x + a, so this model line is pretty simple
@@ -100,7 +100,7 @@ $$\frac{\partial sse}{\partial b}$$
 
 （r是学习率，表示调整的步长）
 
-```Python
+```python
 
 # construct an optimizer to minimize cost and fit line to mydata
 train_op = tf.train.GradientDescentOptimizer(0.01).minimize(loss)
@@ -110,7 +110,7 @@ train_op = tf.train.GradientDescentOptimizer(0.01).minimize(loss)
 
 ![2017-09-01-14-26-44](http://qiniu.xdpie.com/2017-09-01-14-26-44.png?imageView2/2/w/700&_=5603928)
 
-```Python
+```python
 for i in range(500):
     for (x, y) in zip(trX, trY):
         output = sess.run(train_op, feed_dict={X: x, Y: y})
@@ -119,7 +119,7 @@ for i in range(500):
 
 通过刚才几步的组合，程序便能计算出最合适的a,b的值，完成代码清单如下：
 
-```Python
+```python
 import tensorflow as tf
 import numpy as np
 
@@ -183,14 +183,14 @@ b:0.682465 || a:0.1512
 <a id="markdown-16-概念" name="16-概念"></a>
 ## 1.6. 概念
 <a id="markdown-161-简单线性回归" name="161-简单线性回归"></a>
-### 1.6.1 简单线性回归
+### 1.6.1. 简单线性回归
 在房价预测例子中，我们发现房价数据呈一种比较明显的线性关系，那么自然我们可能会选择简单线性回归对数据进行拟合，首先从线性模型着手：
 $$y_p=ax+b$$
 从上面的二元一次方程看出，我们的输入**x**是已知向量，只要我们求出a，b的值，就能通过上述公式进行房价预测了，这就是简单线性回归的思想。
 <a id="markdown-162-梯度下降" name="162-梯度下降"></a>
-### 1.6.2 梯度下降
-<a id="markdown-梯度" name="梯度"></a>
-#### 梯度
+### 1.6.2. 梯度下降
+<a id="markdown-1621-梯度" name="1621-梯度"></a>
+#### 1.6.2.1. 梯度
 如上一节中讲的我们需要找出SSE最小化时的a，b的值，采用的这种方法就叫做梯度下降。梯度下降不仅仅局限于最小化这个函数，也可能根据实际情况需要最大化某个函数，这种情况叫做梯度上升。单纯从数学上讲，对一个函数来说，梯度表示某个向量的偏导数，同时还代表了该向量的方向，在这个方向上，函数增加得最快，在相反的方向上，函数减小得最快。
 利用梯度这一性质，我们采用梯度下降算法去最小化我们的损失函数，我们在梯度的反方向跨域一小步，再从一个新起点开始重复这个过程，直到我们找到损失函数的最小值，最后确定我们的a, b值。
 我们需要最小化的函数为（又称为损失函数）：
@@ -200,8 +200,8 @@ $$\frac{\partial sse}{\partial a}=- \sum_{k=1}^n \ x_k(y_k-ax_k-b) \ =0$$
 $$\frac{\partial sse}{\partial b}=- \sum_{k=1}^n \ (y_k-ax_k-b) =0$$
 最后，输入已知的**x**和**y**值（均为向量），解两个一次方程就计算出a,b的确切值。
 
-<a id="markdown-步长" name="步长"></a>
-#### 步长
+<a id="markdown-1622-步长" name="1622-步长"></a>
+#### 1.6.2.2. 步长
 为了求SSE的最小值，我们需要向梯度相反的方法移动，每移动一步，梯度逐渐降低，但是移动多少才合适呢，这需要我们谨慎的选择步长。目前，主流的选择方法有：
 • 使用固定步长
 • 随时间增长逐步减小步长
