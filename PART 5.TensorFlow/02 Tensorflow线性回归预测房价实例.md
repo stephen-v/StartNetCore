@@ -1,10 +1,10 @@
-<a id="markdown-1-tensorflow-线性回归预测房价实例" name="1-tensorflow-线性回归预测房价实例"></a>
-# 1. Tensorflow 线性回归预测房价实例
+<a id="markdown-tensorflow-线性回归预测房价实例" name="tensorflow-线性回归预测房价实例"></a>
+# Tensorflow 线性回归预测房价实例
 
 >在本节中将通过一个预测房屋价格的实例来讲解梯度下降和损失函数的原理，以及在tensorflow中如何实现
 <!-- TOC -->
 
-- [1. Tensorflow 线性回归预测房价实例](#1-tensorflow-线性回归预测房价实例)
+- [Tensorflow 线性回归预测房价实例](#tensorflow-线性回归预测房价实例)
     - [1.1. 准备工作](#11-准备工作)
     - [1.2. 归一化数据](#12-归一化数据)
     - [1.3. 用随机的值填充a,b并计算误差，误差采用上文所使用SSE(和方差)](#13-用随机的值填充ab并计算误差，误差采用上文所使用sse和方差)
