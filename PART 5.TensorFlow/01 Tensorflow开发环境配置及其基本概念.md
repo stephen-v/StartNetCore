@@ -7,13 +7,15 @@
 - [Tensorflow开发环境配置及其基本概念](#tensorflow开发环境配置及其基本概念)
     - [1.1. 安装Tensorflow开发环境](#11-安装tensorflow开发环境)
         - [1.1.1. 安装pycharm](#111-安装pycharm)
-        - [1.1.2. 安装pythe3.6](#112-安装pythe36)
+        - [1.1.2. 安装python3.6](#112-安装python36)
         - [1.1.3. 安装Tensorflow](#113-安装tensorflow)
     - [1.2. Tensorflow基本概念](#12-tensorflow基本概念)
         - [1.2.1. 声明Tensor](#121-声明tensor)
         - [1.2.2. 变量和占位符](#122-变量和占位符)
             - [1.2.2.1. 变量](#1221-变量)
+            - [变量](#变量)
             - [1.2.2.2. 占位符](#1222-占位符)
+            - [占位符](#占位符)
         - [1.2.3. 计算图（The Computational Graph）](#123-计算图（the-computational-graph）)
         - [1.2.4. 矩阵操作](#124-矩阵操作)
         - [1.2.5. 声明运算符](#125-声明运算符)
@@ -26,8 +28,8 @@
 ### 1.1.1. 安装pycharm
 Pycharm目前是机器学习中最普遍，最收欢迎的工具之一，它强大，具有亲和力，正如它的名字一样魅力无穷。Pycharm官网上有专业版和社区版，社区版是免费的，仅做数据科学方面的研究的话社区版也足够开发使用了，Windows系统的下载地址为：https://www.jetbrains.com/pycharm/download/#section=windows， 下载完成后就可以安装了，安装无需做特别的设置，默认安装就可以了。
 
-<a id="markdown-112-安装pythe36" name="112-安装pythe36"></a>
-### 1.1.2. 安装pythe3.6
+<a id="markdown-112-安装python36" name="112-安装python36"></a>
+### 1.1.2. 安装python3.6
 tensorflow需要运行在python3.4及以上版本，在这个问题上我就出错过一次。之前我电脑上的python版本为2.7，一开始我没有注意到这种情况，我就直接在pycharm中打开File > Default Setting > Project Interpreter，查找tensorflow然后点击安装，结果报错了（如图1-1，1-2所示），错误的提示信息也让人摸不着头脑，查阅了一些资料猛的才发现是我的python版本出了问题，于是毫不犹豫的去下载python3.6（目前已更新到3.6.2版本了），下载地址为官网：https://www.python.org/getit/， 注意python3.6版本已经不支持Win32位的系统了，只有Win64位的安装包，下载如图1-3所示的红色框中的安装包。
 
 ![2017-08-29-09-31-41](http://qiniu.xdpie.com/2017-08-29-09-31-41.png?imageView2/2/w/700&_=5603928)
@@ -118,6 +120,7 @@ randnorm_tsr = tf.random_normal([2, 3], mean=0.0, stddev=1.0)  #[[ 0.68031377  1
 <a id="markdown-1221-变量" name="1221-变量"></a>
 #### 1.2.2.1. 变量
 =======
+<a id="markdown-变量" name="变量"></a>
 #### 变量
 >>>>>>> f28efef03388755ffd3e249f425da9bcd5f489e4
 变量是算法的参数，Tensorflow追踪这些变量并在算法中优化他们。```Variable()```函数用来声明一个变量，并把一个tensor作为输入，同时输出一个变量。使用该函数仅仅是声明了变量，我们还需要初始化变量，以下代码是关于如果声明和初始化一个变量的例子。
@@ -147,6 +150,7 @@ sess.run(init)
 <a id="markdown-1222-占位符" name="1222-占位符"></a>
 #### 1.2.2.2. 占位符
 =======
+<a id="markdown-占位符" name="占位符"></a>
 #### 占位符
 >>>>>>> f28efef03388755ffd3e249f425da9bcd5f489e4
 
