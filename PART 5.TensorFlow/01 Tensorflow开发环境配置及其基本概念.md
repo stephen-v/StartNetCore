@@ -88,7 +88,7 @@ randnorm_tsr = tf.random_normal([2, 3], mean=0.0, stddev=1.0)  #[[ 0.68031377  1
 注意，```tf.constant()```函数可以用来把一个值传播给一个数组，比如通过这样的声明```tf.constant(42, [4, 3])```来模拟```tf.fill([4, 3], 42)```的行为。
 
 ### 1.2.2. 变量和占位符
-#### 1.2.2.1. 变量
+#### 变量
 变量是算法的参数，Tensorflow追踪这些变量并在算法中优化他们。```Variable()```函数用来声明一个变量，并把一个tensor作为输入，同时输出一个变量。使用该函数仅仅是声明了变量，我们还需要初始化变量，以下代码是关于如果声明和初始化一个变量的例子。
 ```Python
 my_var = tf.Variable(tf.zeros([2,3]))   
@@ -108,7 +108,7 @@ sess.run(init)
 
 #init是初始化所有的全局变量，在没有调用sess.run()之前，变量都没有被初始化。
 ```
-#### 1.2.2.2. 占位符
+#### 占位符
 
 占位符是一个对象，你可以对它赋予不同类型和维度的数据，它依赖于计算图的结果，比如一个计算的期望输出。占位符犹如它的名字一样仅仅为要注入到计算图中的数据占据一个位置。声明占位符用```tf.placeholder()```函数，以下是一个例子：
 ```
@@ -162,21 +162,24 @@ sess.run(node3): 7.0
 
 ![2017-08-28-16-57-51](http://qiniu.xdpie.com/2017-08-28-16-57-51.png?imageView2/2/w/700&_=5603928)
 
-上面的计算我们都是建立在静态的数据上，Tensorflow还提供了`palceholder`用于后期输入值的一个占位符
+上面的计算我们都是建立在静态的数据上，换一种说法就是，Tensorflow是采用预加载数据的方式读取数据，如上图，const3和const4是直接嵌入到计算图中的，再把计算图传入Session中运行。
+还有种方式就是先使用python产生数据，再把数据喂给计算图。常用的操作是使用`palceholder`用于后期输入值的一个占位符，在Session运行计算图的时候再填充数据。注意，这两种读取数据的方式不适合大型数据，否则会发生严重的传输效率问题。
 
 ```Python
 
 a = tf.placeholder(tf.float32)
 b = tf.placeholder(tf.float32)
-adder_node = a + b  # + provides a shortcut for tf.add(a, b)
+adder_node = a + b
 
-print(sess.run(adder_node, {a: 3, b: 4.5}))
-print(sess.run(adder_node, {a: [1, 3], b: [2, 4]}))
+list1 = [3, 5]
+list2 = [2, 4]
+
+with tf.Session() as sess:
+    print(sess.run(adder_node, feed_dict = {a: list1, b: list2}))
 
 ---result
 
-7.5
-[ 3.  7.]
+[ 5.  9.]
 
 ```
 还可以再上面的计算途中加入更多操作，见下代码清单：
