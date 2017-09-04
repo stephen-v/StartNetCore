@@ -7,7 +7,7 @@
 - [1. Tensorflow梯度下降与损失函数](#1-tensorflow梯度下降与损失函数)
     - [1.1. 准备工作](#11-准备工作)
     - [1.2. 归一化数据](#12-归一化数据)
-    - [1.3. 用随机的值填充a,b并计算误差，误差采用上文所使用SSE(和方差)](#13-用随机的值填充ab并计算误差，误差采用上文所使用sse和方差)
+    - [1.3. 用随机的值填充a,b并计算误差，误差采用上文所使用SSE(和方差)](#13-用随机的值填充ab并计算误差误差采用上文所使用sse和方差)
     - [1.4. 计算误差梯度](#14-计算误差梯度)
     - [1.5. 调整参数直到SSE参数最小](#15-调整参数直到sse参数最小)
     - [1.6. 概念](#16-概念)
@@ -38,7 +38,7 @@ $$\frac{1}{2}\sum_{k=1}^{n} \ {(y-y_p)^2}$$
 
 在拿到原始的数据后，为方便运算，我们将数据进行归一化处理，归一化计算公式如下
 
-$$\frac{x-x_{min}}{x_{min}-x_{min}}$$
+$$\frac{x-x_{min}}{x_{max}-x_{min}}$$
 
 <a id="markdown-12-归一化数据" name="12-归一化数据"></a>
 ## 1.2. 归一化数据
@@ -91,6 +91,7 @@ $$\frac{\partial sse}{\partial b}$$
 ![2017-09-01-14-24-10](http://qiniu.xdpie.com/2017-09-01-14-24-10.png)
 
 新 a = a – r * ∂SSE/∂a = 0.45-0.01*3.300 = 0.42
+
 新 b = b – r * ∂SSE/∂b= 0.75-0.01*1.545 = 0.73
 
 （r是学习率，表示调整的步长）
@@ -146,7 +147,7 @@ trY = normalize(trY_i)
 X = tf.placeholder(tf.float32)
 Y = tf.placeholder(tf.float32)
 
-# create a shared for weight s
+# 设一个权重变量b，和一个偏差变量a
 b = tf.Variable(0.0, name="weights")
 # create a variable for biases
 a = tf.Variable(0.0, name="biases")
@@ -161,7 +162,7 @@ train_op = tf.train.GradientDescentOptimizer(0.01).minimize(loss)
 init = tf.global_variables_initializer()
 sess.run(init)
 
-# train
+# 训练数据
 for i in range(500):
     for (x, y) in zip(trX, trY):
         output = sess.run(train_op, feed_dict={X: x, Y: y})
