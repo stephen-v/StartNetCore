@@ -59,9 +59,70 @@ $$H(y_{_i})=-\sum_{i}{{y_{_{label}}}ln(y_{_i})}=-\sum_{i}{{y_{_{label}}}ln(softm
 最后，通过最小化该交叉熵，找出最优的w和b值。
 
 ## 3.2 实例：手写识别系统
-了解了逻辑回归的工作原理以后，现在我们用tensorflow来实现一个手写识别系统。首先我们必须去挖掘一些数据，我们使用现成的MNIST数据集，它是机器学习入门级的数据集，它包含各种手写数字图片和每张图片对应的标签，即图片对应的数字（0~9）。你可以通过一段代码把它下载下来：
+了解了逻辑回归的工作原理以后，现在我们用tensorflow来实现一个手写识别系统。首先我们必须去挖掘一些数据，我们使用现成的MNIST数据集，它是机器学习入门级的数据集，它包含各种手写数字图片和每张图片对应的标签，即图片对应的数字（0~9）。你可以通过一段代码把它下载下来，在下载之前记得安装python-mnist：
 ```
 import input_data
 mnist = input_data.read_data_sets('MNIST_data/', one_hot = True)
 ```
-下载下来的数据总共有60000行的训练数据集(mnist.train)，和10000行的测试数据集，同时我们把图片定义为$\bold{x}$，图片的标签定义为
+下载下来的数据总共有60000行的训练数据集(mnist.train)，和10000行的测试数据集(mnist.test)，同时我们把图片设为x，x是一个shape=[None，784]的一个张量，None表示任意长度，比如它可以小于或等于mnist.train里面的60000张图片。另外，每一张图片包含28像素X28像素，向量长度为28*28=789，表示图片是由784维向量空间的点组成的。然后，我们把图片的标签设为y_张量,shape=[None,10]，这个y_的值就是图片原本对应的标签（0~9的数字）。
+![2017-09-06-15-31-42](http://qiniu.xdpie.com/2017-09-06-15-31-42.png)
+
+用代码来表示可以参考：
+```
+x = tf.placeholder("float", [None, 784])  # x定义为占位符，待计算图运行的时候才去读取数据图片
+W = tf.Variable(tf.zeros([784, 10]))      # 权重w初始化为0
+b = tf.Variable(tf.zeros([10]))           # b也初始化为0
+y = tf.nn.softmax(tf.matmul(x, W) + b)    # 创建线性模型
+y_ = tf.placeholder("float", [None, 10])  # 图片的实际标签，为0~9的数字
+```
+数据都准备好以后，就开始训练我们的模型了。之前我们讲了Softmax函数，用该函数来做逻辑回归，我们可以通过这样的代码来表示：
+```
+cross_entropy = -tf.reduce_sum(y_ * tf.log(y))
+```
+但是Tensorflow已经实现好了这个Softmax函数，即：```tf.nn.softmax_cross_entropy_with_logits()```，而无需我们自己这样定义（```-tf.reduce_sum(y_ * tf.log(y))```）。为什么使用Tensorflow的呢，是因为我们在使用该函数的时候，可能会出现数值不稳定的问题，需要自己在Softmax函数中加一些trick，这样做起来比较麻烦，又把模型复杂化了，所以我们推荐使用Tensorflow自带的交叉熵函数，它会帮你处理数值不稳定的问题。
+```
+-tf.reduce_sum(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=y))
+```
+逻辑回归确定好各项函数后，我们还是用梯度下降的方式去寻找那个最优的w和b值，最后，整个手写图片识别系统的代码如下：
+```
+import numpy as np
+import tensorflow as tf
+from tensorflow.examples.tutorials.mnist import input_data
+mnist = input_data.read_data_sets("MNIST_data/",one_hot=True)
+
+from mnist import MNIST
+mndata = MNIST('MNIST_data')
+
+sess = tf.Session()
+x = tf.placeholder("float", [None, 784])
+W = tf.Variable(tf.zeros([784, 10]))
+b = tf.Variable(tf.zeros([10]))
+
+# 把线性模型归一化为概率
+y = tf.nn.softmax(tf.matmul(x, W) + b)
+y_ = tf.placeholder("float", [None, 10])
+
+# 交叉熵回归
+cross_entropy = -tf.reduce_sum(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=y))
+train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)
+
+init = tf.global_variables_initializer()
+sess.run(init)
+
+# 通过1000次的迭代训练找出最佳w和b值
+for i in range(1000):
+    batch_xs, batch_ys = mnist.train.next_batch(100)
+    sess.run(train_step, feed_dict={x: batch_xs, y_: batch_ys})
+
+images, labels = mndata.load_testing()
+
+num = 90
+
+image = images[num]
+label = labels[num]
+print(mndata.display(image))
+
+a = np.array(image).reshape(1, 784)
+result = sess.run(y, feed_dict={x: a})
+print(str(result)+'||'+ str(label))
+```
