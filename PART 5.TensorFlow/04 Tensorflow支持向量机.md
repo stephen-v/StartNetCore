@@ -300,7 +300,7 @@ sess.run(init)
 loss_vec = []
 train_accuracy = []
 test_accuracy = []
-for i in range(10000):
+for i in range(20000):
     rand_index = np.random.choice(len(x_vals_train), size=batch_size)
     rand_x = x_vals_train[rand_index]
     rand_y = np.transpose([y_vals_train[rand_index]])
@@ -340,5 +340,4 @@ plt.show()
 ```
 
 训练后的结果
-
-![2017-09-14-12-00-22](http://qiniu.xdpie.com/2017-09-14-12-00-22.png)
+![2017-09-14-16-44-38](http://qiniu.xdpie.com/2017-09-14-16-44-38.png)
