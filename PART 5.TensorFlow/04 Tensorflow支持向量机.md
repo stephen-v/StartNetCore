@@ -171,7 +171,6 @@ $$\sum_{i=1}^{n}\alpha{_i}^*y_{_i}\phi^T(\bold{x_{_i}})\phi(\bold{x})+\bold{b}=0
 $$\sum_{i=1}^{n}\alpha{_i}^*y_{_i}K(\bold{x_{_i}},\bold{x})+\bold{b}=0$$
 这说明，我们的核函数均是内积函数，通过在低维空间对输入向量求内积来映射到高维空间，从而解决在高维空间中数据线性可分的问题，至于具体的推导过程，这里就不再进行了，感兴趣的可以自己再推导一次，加深理解。
 为什么核函数可以把低维数据映射成高维数据呢，我们以多项式核来解释一下。
-
 假设有两个输入样本，它们均为二维行向量$\bold{x_1}=[x_1,x_2]$，$\bold{x_2}=[x_3,x_4]$，他们的内积为：
 $$\left \langle \bold{x_1},\bold{x_2} \right \rangle=\bold{x_1}\bold{x_2}^T=\begin{bmatrix}
 x_1 &x_2 
@@ -200,3 +199,119 @@ $$\phi(\bold{x_1})\phi(\bold{x_2})=\begin{bmatrix}
 这样我们就把二维数据映射成了三维数据，对于高斯核的映射，会用到泰勒级数展开式，读者可以自行推导一下。
 对于核函数我们就暂时介绍到这里。下一节我们开始运用tensorflow来进行实战，由于没有找到线性不可分的数据集，我们的例子中就没有用到核函数来建模，因为我们只找到了一个线性可分的数据集，所以下一节我们仅运用tensorflow来进行线性二分类的分类器构建。
 ## 4.6 实例
+在学习以上理论后我们通过iris数据集用来做svm的训练和测试。iris数据集是一个花卉的数据集，具体信息可自行百度。
+
+* 首先需要加载数据集,加载数据集需要用到sklearn scipy mkl 库
+* 
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+import tensorflow as tf
+from sklearn import datasets
+
+sess = tf.Session()
+
+# 加载数据
+# iris.data = [(Sepal Length, Sepal Width, Petal Length, Petal Width)]
+iris = datasets.load_iris()
+x_vals = np.array([[x[0], x[3]] for x in iris.data])
+y_vals = np.array([1 if y == 0 else -1 for y in iris.target])
+```
+
+* 分离测试集与训练集
+
+``` python
+
+# 分离训练和测试集
+train_indices = np.random.choice(len(x_vals),
+                                 round(len(x_vals)*0.8),
+                                 replace=False)
+test_indices = np.array(list(set(range(len(x_vals))) - set(train_indices)))
+x_vals_train = x_vals[train_indices]
+x_vals_test = x_vals[test_indices]
+y_vals_train = y_vals[train_indices]
+y_vals_test = y_vals[test_indices]
+
+```
+* 定义模型和loss函数
+
+```python
+
+batch_size = 100
+
+# 初始化feedin
+x_data = tf.placeholder(shape=[None, 2], dtype=tf.float32)
+y_target = tf.placeholder(shape=[None, 1], dtype=tf.float32)
+
+# 创建变量
+A = tf.Variable(tf.random_normal(shape=[2, 1]))
+b = tf.Variable(tf.random_normal(shape=[1, 1]))
+
+# 定义线性模型
+model_output = tf.subtract(tf.matmul(x_data, A), b)
+
+# Declare vector L2 'norm' function squared
+l2_norm = tf.reduce_sum(tf.square(A))
+
+# Loss = max(0, 1-pred*actual) + alpha * L2_norm(A)^2
+alpha = tf.constant([0.01])
+classification_term = tf.reduce_mean(tf.maximum(0., tf.subtract(1., tf.multiply(model_output, y_target))))
+loss = tf.add(classification_term, tf.multiply(alpha, l2_norm))
+
+```
+
+* 开始训练数据
+
+```python
+my_opt = tf.train.GradientDescentOptimizer(0.01)
+train_step = my_opt.minimize(loss)
+
+init = tf.global_variables_initializer()
+sess.run(init)
+
+# Training loop
+loss_vec = []
+train_accuracy = []
+test_accuracy = []
+for i in range(10000):
+    rand_index = np.random.choice(len(x_vals_train), size=batch_size)
+    rand_x = x_vals_train[rand_index]
+    rand_y = np.transpose([y_vals_train[rand_index]])
+    sess.run(train_step, feed_dict={x_data: rand_x, y_target: rand_y})
+```
+* 绘制图像
+
+```python
+[[a1], [a2]] = sess.run(A)
+[[b]] = sess.run(b)
+slope = -a2/a1
+y_intercept = b/a1
+best_fit = []
+
+x1_vals = [d[1] for d in x_vals]
+
+for i in x1_vals:
+    best_fit.append(slope*i+y_intercept)
+
+
+# Separate I. setosa
+setosa_x = [d[1] for i, d in enumerate(x_vals) if y_vals[i] == 1]
+setosa_y = [d[0] for i, d in enumerate(x_vals) if y_vals[i] == 1]
+not_setosa_x = [d[1] for i, d in enumerate(x_vals) if y_vals[i] == -1]
+not_setosa_y = [d[0] for i, d in enumerate(x_vals) if y_vals[i] == -1]
+
+plt.plot(setosa_x, setosa_y, 'o', label='I. setosa')
+plt.plot(not_setosa_x, not_setosa_y, 'x', label='Non-setosa')
+plt.plot(x1_vals, best_fit, 'r-', label='Linear Separator', linewidth=3)
+plt.ylim([0, 10])
+plt.legend(loc='lower right')
+plt.title('Sepal Length vs Pedal Width')
+plt.xlabel('Pedal Width')
+plt.ylabel('Sepal Length')
+plt.show()
+
+```
+
+训练后的结果
+
+![2017-09-14-12-00-22](http://qiniu.xdpie.com/2017-09-14-12-00-22.png)
