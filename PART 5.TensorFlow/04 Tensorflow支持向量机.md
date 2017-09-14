@@ -180,10 +180,10 @@ x_3\\x_4
 用核函数映射成高维空间：
 $$ K(\bold{x_1},\bold{x_2})=(\left \langle \bold{x_1},\bold{x_2} \right \rangle)^2 
 =(x_1x_3+x_2x_4 )^2={x_1}^2{x_3}^2+2x_1x_2x_3x_4+{x_2}^2{x_4}^2=\phi(\bold{x_1}) \phi(\bold{x_2})$$
-按照线性代数中的标准定义，$\phi(\bold{x_1})$和$\phi(\bold{x_2})$为映射后的三维行向量和三位列向量了，即：
+按照线性代数中的标准定义，$\phi(\bold{x_1})$和$\phi(\bold{x_2})$为映射后的三维行向量和三维列向量了，即：
 
 $$\phi(\bold{x_1})=\begin{bmatrix}
-{x_1}^2 & \sqrt{2}{x_1}^2{x_2}^2 & {x_2}^2
+{x_1}^2 & \sqrt{2}{x_1}{x_2} & {x_2}^2
 \end{bmatrix}$$
 $$\phi(\bold{x_2})=\begin{bmatrix}
 {x_3}^2\\ \\ \sqrt{2}{x_3}{x_4}\\
