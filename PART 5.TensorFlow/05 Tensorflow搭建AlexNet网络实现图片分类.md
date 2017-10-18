@@ -567,4 +567,23 @@ def test_image(path_image, num_class, weights_path='Default'):
 test_image('./test/20.jpg', num_class=2) # 输入一张新图片
 ```
 
-我们在网上任意下载了10张猫狗图片来进行验证，因为图片少，都比较清晰，所有图片均分类正确，第一次验证给人的感觉很不错，不过我们就再也没有试试其他图片了。如果你赶兴趣，你可以下载我们的代码，用自己的训练集来试试，我们所有的代码均在github上，地址为：https://github.com/stephen-v/tensorflow_alexnet_classify 。
+我们在网上任意下载了10张猫狗图片来进行验证，有三张图片识别错误（如下图），验证的精确度70%，效果不是很理想。但是如果你感兴趣，你可以下载我们的代码，用自己的训练集来试试，我们所有的代码均在github上，地址为：https://github.com/stephen-v/tensorflow_alexnet_classify 
+
+![2017-10-18-10-16-50](http://qiniu.xdpie.com/2017-10-18-10-16-50.png)
+
+![2017-10-18-10-18-37](http://qiniu.xdpie.com/2017-10-18-10-18-37.png)
+
+![2017-10-18-10-19-57](http://qiniu.xdpie.com/2017-10-18-10-19-57.png)
+
+![2017-10-18-10-21-22](http://qiniu.xdpie.com/2017-10-18-10-21-22.png)
+
+![2017-10-18-10-23-09](http://qiniu.xdpie.com/2017-10-18-10-23-09.png)
+
+![2017-10-18-10-27-53](http://qiniu.xdpie.com/2017-10-18-10-27-53.png)
+
+![2017-10-18-10-26-36](http://qiniu.xdpie.com/2017-10-18-10-26-36.png)
+
+![2017-10-18-10-29-58](http://qiniu.xdpie.com/2017-10-18-10-29-58.png)
+
+![2017-10-18-10-33-15](http://qiniu.xdpie.com/2017-10-18-10-33-15.png)
+![2017-10-18-10-38-02](http://qiniu.xdpie.com/2017-10-18-10-38-02.png)
