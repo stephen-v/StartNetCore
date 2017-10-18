@@ -1,3 +1,4 @@
+###**版权声明：本文为博主原创文章，未经博主允许不得转载。**
 #1. 图片数据处理
 我们都知道，一张图片是由一个个像素组成，每个像素的颜色我们常常用RGB、HSB、CYMK、RGBA等颜色值来表示，每个颜色值的取值范围不一样，但都代表了一个像素点数据信息。我们在对图片的数据处理过程中，常常用RGB数据来对图片进行处理，RGB表示红绿蓝三通道色，取值范围为0~255，所以一个像素点我们可以把它看作是一个三维数组，即：`array([[[0, 255, 255]]])`，三个数值分布表示R、G、B（红、绿、蓝）的颜色值。比如下图一张3*3大小的jpg格式的图片:
 
@@ -210,7 +211,7 @@ def load_initial_weights(self, session):
                         var = tf.get_variable('weights', trainable=False)
                         session.run(var.assign(data))
 ```
-在上一节我们讲述AlexNet的架构的时，曾提到过数据分组处理，这里用程序来描述一下在一个CPU情况下，我们是如何把数据进行分组处理的。数据的分组处理都在卷积层中发生，因此我们定义了一个卷积函数，由于在第一层卷积没有分组，所以我们在函数中需要做分组的判断，如果没有分组，输入数据和权重直接做卷积运算；如果有分组，则把输入数据和权重先划分后做卷积运算，卷积结束后再用`concat()`结合起来，这就是分组的具体操作。
+在上一节我们讲述AlexNet的架构的时，曾提到过数据分组处理，这里用程序来描述一下在一个CPU情况下，我们是如何把数据进行分组处理的。数据的分组处理都在卷积层中发生，因此我们定义了一个卷积函数，由于在第一层卷积没有分组，所以我们在函数中需要做分组的判断，如果没有分组，输入数据和权重直接做卷积运算；如果有分组，则把输入数据和权重先划分后做卷积运算，卷积结束后再用`concat()`合并起来，这就是分组的具体操作。
 ```Python
 def conv(x, filter_height, filter_width, num_filters, stride_y, stride_x, name,padding='SAME', groups=1):
     """Create a convolution layer."""
@@ -311,8 +312,9 @@ class ImageDataGenerator(object):
 
 网络搭建完成，数据准备就绪，最后就是开始训练了。由于网络和图片生成器是可以复用的，在训练图片的时候需要用户根据自己的实际情况编写代码调用网络和图片生成器模块，同时定义好损失函数和优化器，以及需要在Tensorboard中观测的各项指标等等操作。下面一节我们将开始进行网络训练。
 #5. 用AlexNet识别猫狗图片
-##5.1 训练网络
-现在我们有2万多张猫狗图片训练集，以及2万多张测试集，它们大小不一。我们的目的是使用AlexNet正确的分类猫和狗两种动物，因此，我们的类别标签个数只有2个，并用0代表猫，1代表狗。如果你需要分类其他的动物或者物品，或者anything，你需要标注好图片的实际标签，定义好图片Tensorboard存放的目录，以及训练好的模型和参数的存放目录等等。就像这样：·
+##5.1 定义分类
+如上一节讲的，datagenerator.py（图片转换模块）和alexnet.py（AlexNet网络模块）我们已经搭建好了，你在使用的时候无需做修改。现在你只需要根据自己的分类需求编写精调代码，如finetune.py中所示。
+假设我们有3万张猫狗图片训练集，以及3000张测试集，它们大小不一。我们的目的是使用AlexNet正确的分类猫和狗两种动物，因此，我们的类别标签个数只有2个，并用0代表猫，1代表狗。如果你需要分类其他的动物或者物品，或者anything，你需要标注好图片的实际标签，定义好图片Tensorboard存放的目录，以及训练好的模型和参数的存放目录等等。就像这样：
 ```Python
 import os
 import numpy as np
@@ -324,8 +326,8 @@ import glob
 from tensorflow.contrib.data import Iterator
 
 learning_rate = 1e-4                   # 学习率
-num_epochs = 10                        # 代的个数
-batch_size = 128                       # 一次性处理的图片张数
+num_epochs = 100                       # 代的个数
+batch_size = 1024                      # 一次性处理的图片张数
 dropout_rate = 0.5                     # dropout的概率
 num_classes = 2                        # 类别标签
 train_layers = ['fc8', 'fc7', 'fc6']   # 训练层，即三个全链层
@@ -338,19 +340,27 @@ if not os.path.isdir(checkpoint_path): #如果没有存放模型的目录，程�
     os.mkdir(checkpoint_path)
 
 ```
-接着我们会调用图片生成器，来生成图片数据：
+接着我们会调用图片生成器，来生成图片数据，并初始化数据：
 ```Python
 
 train_image_path = 'train/'  # 指定训练集数据路径（根据实际情况指定训练数据集的路径）
+test_image_cat_path = 'test/cat/'  # 指定测试集数据路径（根据实际情况指定测试数据集的路径）
+test_image_dog_path = 'test/dog/'
 
 # 打开训练数据集目录，读取全部图片，生成图片路径列表
 image_filenames_cat = np.array(glob.glob(train_image_path + 'cat.*.jpg'))
 image_filenames_dog = np.array(glob.glob(train_image_path + 'dog.*.jpg'))
 
+# 打开测试数据集目录，读取全部图片，生成图片路径列表
+test_image_filenames_cat = np.array(glob.glob(test_image_cat_path + '*.jpg'))
+test_image_filenames_dog = np.array(glob.glob(test_image_dog_path + '*.jpg'))
+
 image_path = []
 label_path = []
+test_image = []
+test_label = []
 
-# 遍历图片URL，并把图片对应的实际标签和路径分别存入两个新列表中
+# 遍历训练集图片URL，并把图片对应的实际标签和路径分别存入两个新列表中
 for catitem in image_filenames_cat:
     image_path.append(catitem)
     label_path.append(0)
@@ -358,12 +368,39 @@ for dogitem in image_filenames_dog:
     image_path.append(dogitem)
     label_path.append(1)
 
-# 调用图片生成器，转换图片
+# 遍历测试集图片URL，并把图片路径存入一个新列表中
+for catitem in test_image_filenames_cat:
+    test_image.append(catitem)
+    test_label.append(0)
+
+for dogitem in test_image_filenames_cat:
+    test_image.append(dogitem)
+    test_label.append(1)
+
+# 调用图片生成器，把训练集图片转换成三维数组
 tr_data = ImageDataGenerator(
     images=image_path,
     labels=label_path,
     batch_size=batch_size,
     num_classes=num_classes)
+
+# 调用图片生成器，把测试集图片转换成三维数组
+test_data = ImageDataGenerator(
+    images=test_image,
+    labels=test_label,
+    batch_size=batch_size,
+    num_classes=num_classes,
+    shuffle=False)
+
+# 定义迭代器
+iterator = Iterator.from_structure(tr_data.data.output_types,
+                                   tr_data.data.output_shapes)
+# 定义每次迭代的数据
+next_batch = iterator.get_next()
+
+# 初始化数据
+training_initalize = iterator.make_initializer(tr_data.data)
+testing_initalize = iterator.make_initializer(test_data.data)
 
 ```
 训练数据准备好以后，我们就要让数据通过AlexNet。
@@ -373,26 +410,32 @@ x = tf.placeholder(tf.float32, [batch_size, 227, 227, 3])
 y = tf.placeholder(tf.float32, [batch_size, num_classes])
 keep_prob = tf.placeholder(tf.float32) # dropout概率
 
-# 定义迭代器
-iterator = Iterator.from_structure(tr_data.data.output_types, tr_data.data.output_shapes)
-
-# 定义每次迭代的数据
-next_batch = iterator.get_next()
 
 # 图片数据通过AlexNet网络处理
 model = AlexNet(x, keep_prob, num_classes, train_layers)
+
+# 定义我们需要训练的全连层的变量列表
+var_list = [v for v in tf.trainable_variables() if v.name.split('/')[0] in train_layers]
+
 
 # 执行整个网络图
 score = model.fc8
 
 ```
-接着当然就是定义损失函数，优化器。在优化参数过程中，我们使用的是梯度下降算法，而不是原本的反向传播算法。
+接着当然就是定义损失函数，优化器。我们需要优化三层全链层的参数，同时在优化参数过程中，我们使用的是梯度下降算法，而不是反向传播算法。
 ```Python
 # 损失函数
 loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=score, labels=y))
 
+# 定义需要精调的每一层的梯度
+gradients = tf.gradients(loss, var_list)
+gradients = list(zip(gradients, var_list))
+
 # 优化器，采用梯度下降算法进行优化
-optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
+optimizer = tf.train.GradientDescentOptimizer(learning_rate)
+
+# 需要精调的每一层都采用梯度下降算法优化参数
+train_op = optimizer.apply_gradients(grads_and_vars=gradients)
 
 # 定义网络精确度
 with tf.name_scope("accuracy"):
@@ -412,6 +455,7 @@ saver = tf.train.Saver()
 
 # 定义一代的迭代次数
 train_batches_per_epoch = int(np.floor(tr_data.data_size / batch_size))
+test_batches_per_epoch = int(np.floor(test_data.data_size / batch_size))
 
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
@@ -426,7 +470,7 @@ with tf.Session() as sess:
     print("{} Open Tensorboard at --logdir {}".format(datetime.now(),
                                                       filewriter_path))
 
-    # 总共训练10代
+    # 总共训练100代
     for epoch in range(num_epochs):
         sess.run(iterator.make_initializer(tr_data.data))
         print("{} Epoch number: {} start".format(datetime.now(), epoch + 1))
@@ -451,15 +495,13 @@ with tf.Session() as sess:
 
 # 测试模型精确度
 print("{} Start validation".format(datetime.now()))
-sess.run(iterator.make_initializer(tr_data.data))
+sess.run(testing_initalize)
 test_acc = 0.
 test_count = 0
 
-for _ in range(train_batches_per_epoch):
+for _ in range(test_batches_per_epoch):
     img_batch, label_batch = sess.run(next_batch)
-    acc = sess.run(accuracy, feed_dict={x: img_batch,
-                                        y: label_batch,
-                                        keep_prob: 1.})
+    acc = sess.run(accuracy, feed_dict={x: img_batch, y: label_batch, keep_prob: 1.0})
     test_acc += acc
     test_count += 1
 
@@ -480,3 +522,49 @@ save_path = saver.save(sess, checkpoint_name)
 print("{} Epoch number: {} end".format(datetime.now(), epoch + 1))
 
 ```
+到此为止，一个完整的AlexNet就搭建完成了。在准备好训练集和测试集数据后，下面我们开始训练我们的网络。
+## 5.2 训练网络
+我们总共训练了100代，使用CPU计算进行计算，在台式机上跑了一天左右，完成了3万张图片的训练和3000张图片的测试，网络的识别精确度为71.25%，这个结果不是很好，可能与我们的数据量少有关系。如果你有上十万张的数据集，再增加训练次数，相信你网络的精度应该比我们训练的还要好。下面看看网络的计算图，这是Tensorboard中记录下的，通过该图，你可以对整个网络的架构及运行一目了然。
+
+![2017-10-16-13-54-41](http://qiniu.xdpie.com/2017-10-16-13-54-41.png)
+
+##5.3 验证
+网络训练好了以后，当然我们想迫不及待的试试我们网络。首先我们还是得编写自己的验证代码：
+```Python
+import tensorflow as tf
+from alexnet import AlexNet             # import训练好的网络
+import matplotlib.pyplot as plt
+
+class_name = ['cat', 'dog']             # 自定义猫狗标签
+
+
+def test_image(path_image, num_class, weights_path='Default'):
+    # 把新图片进行转换
+    img_string = tf.read_file(path_image)
+    img_decoded = tf.image.decode_png(img_string, channels=3)
+    img_resized = tf.image.resize_images(img_decoded, [227, 227])
+    img_resized = tf.reshape(img_resized, shape=[1, 227, 227, 3])
+    
+    # 图片通过AlexNet
+    model = AlexNet(img_resized, 0.5, 2, skip_layer='', weights_path=weights_path)
+    score = tf.nn.softmax(model.fc8)
+    max = tf.arg_max(score, 1)
+    saver = tf.train.Saver()
+
+    with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
+        saver.restore(sess, "./tmp/checkpoints/model_epoch10.ckpt") # 导入训练好的参数
+        # score = model.fc8
+        print(sess.run(model.fc8))
+        prob = sess.run(max)[0]
+
+        # 在matplotlib中观测分类结果
+        plt.imshow(img_decoded.eval())
+        plt.title("Class:" + class_name[prob])
+        plt.show()
+
+
+test_image('./test/20.jpg', num_class=2) # 输入一张新图片
+```
+
+我们在网上任意下载了10张猫狗图片来进行验证，因为图片少，都比较清晰，所有图片均分类正确，第一次验证给人的感觉很不错，不过我们就再也没有试试其他图片了。如果你赶兴趣，你可以下载我们的代码，用自己的训练集来试试，我们所有的代码均在github上，地址为：https://github.com/stephen-v/tensorflow_alexnet_classify 。
