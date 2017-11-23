@@ -25,7 +25,7 @@ VGG网络是牛津大学Visual Geometry Group团队研发搭建，该项目的�
 2、一些层的pre-initialisation
 怎么做pre-initialisation呢？作者先训练最浅的网络A，然后把A的前4个卷积层和最后全链层的权值当作其他网络的初始值，未赋值的中间层通过随机初始化进行训练。这样避免了不好的权值初始值对于网络训练的影响，从而加快了收敛。
 
-为什么在整个VGG网络中都用的是3X3大小的filter呢，VGG团队给出了下面的解释（参见博客 http://www.voidcn.com/article/p-rtlrhunk-bcp.html）：
+为什么在整个VGG网络中都用的是3X3大小的filter呢，VGG团队给出了下面的解释：
 1、3 * 3是最小的能够捕获上下左右和中心概念的尺寸。
 
 2、两个3 * 3的卷基层的有限感受野是5X5；三个3X3的感受野是7X7，可以替代大的filter尺寸。（感受野表示网络内部的不同位置的神经元对原图像的感受范围大小，神经元感受野的值越大表示其能接触到的原始图像范围就越大，也意味着他可能蕴含更为全局、语义层次更高的特征；而值越小则表示其所包含的特征越趋向于局部和细节。）
@@ -403,3 +403,12 @@ test_image('./validate/11.jpg', 2)
 ![2017-11-23-09-59-03](http://qiniu.xdpie.com/2017-11-23-09-59-03.png)
 
 ![2017-11-23-10-02-12](http://qiniu.xdpie.com/2017-11-23-10-02-12.png)
+
+
+#### 参考文献：
+《VERY DEEP CONVOLUTIONAL NETWORKS FOR LARGE-SCALE IMAGE RECOGNITION》Karen Simonyan
+∗ & Andrew Zisserman
+《Deep Convolutional Neural Networks for Fire Detection in Images》Jivitesh Sharma(B), Ole-Christoffer Granmo, Morten Goodwin, and Jahn Thomas Fidje
+https://github.com/UIA-CAIR/Fire-Detection-Image-Dataset
+https://github.com/machrisaa/tensorflow-vgg
+https://gist.github.com/baraldilorenzo/07d7802847aaad0a35d3#file-vgg-16_keras-py-L24
