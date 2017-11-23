@@ -1,6 +1,17 @@
-###**版权声明：本文为博主原创文章，未经博主允许不得转载。**
-#1.VGG介绍
-## 1.1 VGG模型结构
+<!-- TOC -->
+
+- [1. VGG介绍](#1-vgg%E4%BB%8B%E7%BB%8D)
+    - [1.1. VGG模型结构](#11-vgg%E6%A8%A1%E5%9E%8B%E7%BB%93%E6%9E%84)
+    - [1.2. VGG19架构](#12-vgg19%E6%9E%B6%E6%9E%84)
+- [2. 用Tensorflow搭建VGG19网络](#2-%E7%94%A8tensorflow%E6%90%AD%E5%BB%BAvgg19%E7%BD%91%E7%BB%9C)
+- [3. 训练网络](#3-%E8%AE%AD%E7%BB%83%E7%BD%91%E7%BB%9C)
+    - [参考文献](#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE)
+
+<!-- /TOC -->
+<a id="markdown-1-vgg介绍" name="1-vgg介绍"></a>
+# 1. VGG介绍
+<a id="markdown-11-vgg模型结构" name="11-vgg模型结构"></a>
+## 1.1. VGG模型结构
 VGG网络是牛津大学Visual Geometry Group团队研发搭建，该项目的主要目的是证明增加网络深度能够在一定程度上提高网络的精度。VGG有5种模型，A-E，其中的E模型VGG19是参加ILSVRC 2014挑战赛使用的模型，并获得了ILSVRC定位第一名，和分类第二名的成绩。整个过程证明，通过把网络深度增加到16-19层确实能够提高网络性能。VGG网络跟之前学习的LeNet网络和AlexNet网络有很多相似之处，以下搭建的VGG19模型也像上一次搭建的AlexNet一样，分成了5个大的卷积层，和3个大的全链层，不同的是，VGG的5个卷积层层数相应增加了；同时，为了减少网络训练参数的数量，整个卷积网络均使用3X3大小的卷积。
 
 首先来看看原论文中VGG网络的5种模型结构。A-E模型均是由5个stage和3个全链层和一个softmax分类层组成，其中每个stege有一个max-pooling层和多个卷积层。每层的卷积核个数从首阶段的64个开始，每个阶段增长一倍，直到达到512个。
@@ -34,7 +45,8 @@ VGG网络是牛津大学Visual Geometry Group团队研发搭建，该项目的�
 
 4、多个3 * 3的卷积层比一个大尺寸的filter有更少的参数，假设卷基层的输入和输出的特征图大小相同为C，那么三个3 * 3的卷积层参数个数为$3(3^2C^2)=27C^2$；一个7 * 7的卷积层参数为$49C^2$，整整比3 * 3的多了81%。
 
-## 1.2 VGG19架构
+<a id="markdown-12-vgg19架构" name="12-vgg19架构"></a>
+## 1.2. VGG19架构
 首先来看看论文中描述的VGG19的网络结构图，输入是一张224X224大小的RGB图片，在输入图片之前，仍然要对图片的每一个像素进行RGB数据的转换和提取。然后使用3X3大小的卷积核进行卷积，作者在论文中描述了使用3X3filter的意图：
 “we use filters with a very small receptive field: 3 × 3 (which is the smallest size to capture the notion of left/right, up/down, center).”
 即上面提到的“3X3是最小的能够捕获上下左右和中心概念的尺寸”。接着图片依次经过5个Stage和3层全连层的处理，一直到softmax输出分类。卷积核深度从64一直增长到512，更好的提取了图片的特征向量。
@@ -82,7 +94,8 @@ VGG网络是牛津大学Visual Geometry Group团队研发搭建，该项目的�
 
 整个网络不包含LRN，因为LRN会占用内存和增加计算时间。接着经过3个全链层的处理，由Softmax输出1000个类别的分类结果。
 
-#2. 用Tensorflow搭建VGG19网络
+<a id="markdown-2-用tensorflow搭建vgg19网络" name="2-用tensorflow搭建vgg19网络"></a>
+# 2. 用Tensorflow搭建VGG19网络
 VGG团队早已用Tensorflow搭建好了VGG16和VGG19网络，在使用他们的网络前，你需要下载已经训练好的参数文件vgg19.npy，下载地址为：https://mega.nz/#!xZ8glS6J!MAnE91ND_WyfZ_8mvkuSa2YcA7q-1ehfSm-Q1fxOvvs 。原版的VGG16/19模型代码在 https://github.com/machrisaa/tensorflow-vgg （该模型中提到的weights文件已不可用）， 我们根据该模型代码对VGG19网络做了一些微调以适应自己的训练需求，同时也像上一篇的AlexNet一样，增加了精调训练代码，后面会有介绍。
 
 使用Tensorflow来搭建一个完整的VGG19网络，包含我修改过的整整用了160行代码，如下附上一部分代码，该网络也是VGG团队已经训练好了的，你可以拿来直接进行图片识别和分类，但是如果你有其他的图片识别需求，你需要用自己的训练集来训练一次以获得想要的结果，并存储好自己的权重文件。
@@ -232,7 +245,8 @@ if __name__ == "__main__":
     print (np.argmax(out))
     
 ```
-#3. 训练网络
+<a id="markdown-3-训练网络" name="3-训练网络"></a>
+# 3. 训练网络
 
 虽然使用训练好的网络和网络权值可以直接进行分类识别应用，但是本着学习研究的精神，我们需要知道如何训练数据以及测试和验证网络模型。
 
@@ -405,10 +419,11 @@ test_image('./validate/11.jpg', 2)
 ![2017-11-23-10-02-12](http://qiniu.xdpie.com/2017-11-23-10-02-12.png)
 
 
-#### 参考文献：
-《VERY DEEP CONVOLUTIONAL NETWORKS FOR LARGE-SCALE IMAGE RECOGNITION》Karen Simonyan
+<a id="markdown-参考文献" name="参考文献"></a>
+## 参考文献
+* 《VERY DEEP CONVOLUTIONAL NETWORKS FOR LARGE-SCALE IMAGE RECOGNITION》Karen Simonyan
 ∗ & Andrew Zisserman
-《Deep Convolutional Neural Networks for Fire Detection in Images》Jivitesh Sharma(B), Ole-Christoffer Granmo, Morten Goodwin, and Jahn Thomas Fidje
-https://github.com/UIA-CAIR/Fire-Detection-Image-Dataset
-https://github.com/machrisaa/tensorflow-vgg
-https://gist.github.com/baraldilorenzo/07d7802847aaad0a35d3#file-vgg-16_keras-py-L24
+* 《Deep Convolutional Neural Networks for Fire Detection in Images》Jivitesh Sharma(B), Ole-Christoffer Granmo, Morten Goodwin, and Jahn Thomas Fidje
+* https://github.com/UIA-CAIR/Fire-Detection-Image-Dataset
+* https://github.com/machrisaa/tensorflow-vgg
+* https://gist.github.com/baraldilorenzo/07d7802847aaad0a35d3#file-vgg-16_keras-py-L24
