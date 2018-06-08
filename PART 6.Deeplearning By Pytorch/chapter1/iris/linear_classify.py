@@ -23,16 +23,15 @@ class linearNetwork:
     # train the linear network
     def train(self, inputs_list, targets_list):
         # linear output
-        linear_output = numpy.dot(self.wih, inputs_list)
+        linear_outputs = numpy.dot(self.wih, inputs_list)
         # calculate the signals emerging from final output layer
-        final_outputs = self.activation_function(linear_output)
+        final_outputs = self.activation_function(linear_outputs)
 
         # output layer error is the (target - actual)
         output_errors = targets_list - final_outputs
 
         # update the weights for the links between the input and final layers
-        self.wih += self.lr * numpy.dot((output_errors * linear_output * (1.0 - linear_output)),
-                                        linear_output)
+        self.wih += self.lr * numpy.dot((output_errors * final_outputs * (1.0 - final_outputs)), numpy.transpose(linear_outputs))
 
         pass
 

@@ -4,7 +4,7 @@ import numpy as np
 # number of input, hidden and output nodes, learning rate
 input_nodes = 4
 output_nodes = 2
-learning_rate = 0.1
+learning_rate = 0.01
 # create instance of linear network
 n = linear_classify.linearNetwork(input_nodes, output_nodes, learning_rate)
 

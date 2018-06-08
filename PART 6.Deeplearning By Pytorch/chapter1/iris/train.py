@@ -22,10 +22,19 @@ for e in range(epochs):
     for record in training_data_list:
         # split the record by the ',' commas
         record = record.replace('\n', '').split(',')
-        input_data = [float(data) for data in record]
+        record = [float(data) for data in record]
+        input_data = record[0:4]
         # create the target output values (all 0.01, except the desired label which is 0.99)
-        targets = np.zeros(output_nodes) + 0.01
-        n.train(input_data, targets)
+        targets_list = [0.01, 0.99]
+        """
+        targets = int(record[4:][0])
+        # create the target output values (all 0.01, except the desired label which is 0.99)
+        if targets == 1:
+            targets_list = [0.01, 0.99]
+        else:
+            targets_list = [0.99, 0.01]
+        """
+        n.train(input_data, targets_list)
         pass
     np.save('wih.npy', n.wih)
     pass
