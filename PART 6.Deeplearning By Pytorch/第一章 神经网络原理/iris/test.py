@@ -1,5 +1,5 @@
-from chapter1.iris import linear_classify
 import numpy as np
+from chapter1.iris import linear_classify
 
 # number of input, hidden and output nodes, learning rate
 input_nodes = 4
